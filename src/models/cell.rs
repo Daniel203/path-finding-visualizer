@@ -2,7 +2,8 @@ use std::fmt::Display;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Cell {
-    Void,
+    UnSeen,
+    Seen,
     Wall,
     Start,
     End,
@@ -11,7 +12,8 @@ pub enum Cell {
 impl Cell {
     pub fn class_name(&self) -> String {
         match self {
-            Cell::Void => String::from("cell cell-void"),
+            Cell::UnSeen => String::from("cell cell-unseen"),
+            Cell::Seen => String::from("cell cell-seen"),
             Cell::Wall => String::from("cell cell-wall"),
             Cell::Start => String::from("cell cell-start"),
             Cell::End => String::from("cell cell-end"),
@@ -22,7 +24,8 @@ impl Cell {
 impl Display for Cell {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Cell::Void => write!(f, " "),
+            Cell::UnSeen => write!(f, " "),
+            Cell::Seen => write!(f, "V"),
             Cell::Wall => write!(f, "W"),
             Cell::Start => write!(f, "S"),
             Cell::End => write!(f, "E"),

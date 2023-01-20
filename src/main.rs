@@ -1,5 +1,6 @@
 use crate::components::app_component::App;
 
+mod algorithms;
 mod components;
 mod models;
 

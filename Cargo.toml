@@ -7,5 +7,7 @@ edition = "2021"
 
 [dependencies]
 gloo-console = "0.2.3"
+strum = "0.24.1"
+strum_macros = "0.24.3"
 web-sys = "0.3.60"
 yew = { version = "0.20.0", features = ["csr"] }

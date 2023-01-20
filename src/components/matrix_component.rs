@@ -1,27 +1,53 @@
-use crate::models::{cell::Cell, matrix::Matrix};
-use yew::prelude::*;
+use web_sys::MouseEvent;
+use yew::{
+    classes, function_component, html, use_state, Callback, Html, Properties, UseStateHandle,
+};
+
+use crate::{
+    algorithms::bfs::bfs,
+    components::algorithm_selector_component::AlgorithmSelectorComponent,
+    models::{cell::Cell, matrix::Matrix},
+};
+
+use super::algorithm_selector_component::PFAlgorithms;
 
 #[function_component(MatrixComponent)]
 pub fn matrix_component() -> Html {
     let matrix_handle = use_state(|| Matrix::new(40, 20));
     let mouse_down = use_state(|| false);
 
+    let matrix_clone = matrix_handle.clone();
+
+    let on_find_path_clicked: Callback<PFAlgorithms> =
+        Callback::from(move |algorithm: PFAlgorithms| {
+            //TODO: call the algorithm and draw on the frontend the matrix updated
+            //if !matrix_clone.start.is_none() && !matrix_clone.end.is_none() {
+            //match algorithm {
+            //PFAlgorithms::BFS => {
+            //bfs(matrix_clone.matrix, matrix_clone.start.unwrap(), matrix_clone.end.unwrap());
+            //},
+            //PFAlgorithms::DFS => todo!(),
+            //}
+            //}
+        });
+
     html! {
-        <table>
-        {
-            matrix_handle.matrix
-                .iter()
-                .enumerate()
-                .map(|(y, line)| {
-                    html! {
-                        <tr>
-                            { table_row(line, &matrix_handle, &mouse_down, y) }
-                        </tr>
-                    }
-                })
-            .collect::<Html>()
-        }
-        </table>
+        <div>
+            <AlgorithmSelectorComponent {on_find_path_clicked} />
+            <table>
+            {
+                matrix_handle.matrix
+                    .iter()
+                    .enumerate()
+                    .map(|(y, line)| {
+                        html! {
+                            <tr>{table_row(line, &matrix_handle, &mouse_down, y)}</tr>
+                        }
+                    })
+                .collect::<Html>()
+            }
+            </table>
+        </div>
     }
 }
 
@@ -45,9 +71,6 @@ fn table_cell(
     x: usize,
     y: usize,
 ) -> Html {
-    let matrix_handle = matrix_handle.clone();
-    let mouse_down = mouse_down.clone();
-
     let onclick = {
         let matrix_handle = matrix_handle.clone();
 
@@ -104,7 +127,8 @@ fn table_cell(
 
 fn handle_cell_clicked(matrix_handle: &UseStateHandle<Matrix>, x: usize, y: usize) -> Matrix {
     let mut new_matrix = (**matrix_handle).clone();
-    let coords = (x as u32, y as u32);
+    let coords = (x as isize, y as isize);
+
     if new_matrix.start.is_none() {
         new_matrix.add_start(coords);
     } else if new_matrix.end.is_none() {
@@ -112,5 +136,6 @@ fn handle_cell_clicked(matrix_handle: &UseStateHandle<Matrix>, x: usize, y: usiz
     } else {
         new_matrix.toggle_cell(coords);
     }
-    new_matrix
+
+    return new_matrix;
 }
