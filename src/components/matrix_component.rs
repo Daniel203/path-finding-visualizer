@@ -1,3 +1,5 @@
+use std::borrow::Borrow;
+
 use web_sys::MouseEvent;
 use yew::{
     classes, function_component, html, use_state, Callback, Html, Properties, UseStateHandle,
@@ -20,15 +22,20 @@ pub fn matrix_component() -> Html {
 
     let on_find_path_clicked: Callback<PFAlgorithms> =
         Callback::from(move |algorithm: PFAlgorithms| {
-            //TODO: call the algorithm and draw on the frontend the matrix updated
-            //if !matrix_clone.start.is_none() && !matrix_clone.end.is_none() {
-            //match algorithm {
-            //PFAlgorithms::BFS => {
-            //bfs(matrix_clone.matrix, matrix_clone.start.unwrap(), matrix_clone.end.unwrap());
-            //},
-            //PFAlgorithms::DFS => todo!(),
-            //}
-            //}
+            //let mut matrix_board = matrix_clone.matrix.clone();
+
+            if !matrix_clone.start.is_none() && !matrix_clone.end.is_none() {
+                match algorithm {
+                    PFAlgorithms::BFS => {
+                        bfs(
+                            matrix_clone.clone(), //matrix_clone.matrix.clone(),
+                                                  //matrix_clone.start.unwrap(),
+                                                  //matrix_clone.end.unwrap(),
+                        );
+                    }
+                    PFAlgorithms::DFS => todo!(),
+                }
+            }
         });
 
     html! {
