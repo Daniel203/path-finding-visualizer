@@ -35,7 +35,6 @@ impl Matrix {
 
         match cell_type {
             Cell::UnSeen => self.matrix[coords.1 as usize][coords.0 as usize] = Cell::Wall,
-            Cell::Seen => (),
             Cell::Wall => self.matrix[coords.1 as usize][coords.0 as usize] = Cell::UnSeen,
             Cell::Start => {
                 self.start = None;
@@ -45,6 +44,7 @@ impl Matrix {
                 self.end = None;
                 self.matrix[coords.1 as usize][coords.0 as usize] = Cell::UnSeen;
             }
+            _ => (),
         }
     }
 

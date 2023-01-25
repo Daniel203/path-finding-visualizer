@@ -1,9 +1,7 @@
 use std::borrow::Borrow;
 
 use web_sys::MouseEvent;
-use yew::{
-    classes, function_component, html, use_state, Callback, Html, Properties, UseStateHandle,
-};
+use yew::{classes, function_component, html, use_state, Callback, Html, UseStateHandle};
 
 use crate::{
     algorithms::bfs::bfs,
@@ -22,16 +20,10 @@ pub fn matrix_component() -> Html {
 
     let on_find_path_clicked: Callback<PFAlgorithms> =
         Callback::from(move |algorithm: PFAlgorithms| {
-            //let mut matrix_board = matrix_clone.matrix.clone();
-
             if !matrix_clone.start.is_none() && !matrix_clone.end.is_none() {
                 match algorithm {
                     PFAlgorithms::BFS => {
-                        bfs(
-                            matrix_clone.clone(), //matrix_clone.matrix.clone(),
-                                                  //matrix_clone.start.unwrap(),
-                                                  //matrix_clone.end.unwrap(),
-                        );
+                        bfs(matrix_clone.clone());
                     }
                     PFAlgorithms::DFS => todo!(),
                 }
