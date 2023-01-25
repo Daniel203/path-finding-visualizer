@@ -401,6 +401,7 @@ dependencies = [
  "gloo-console",
  "strum",
  "strum_macros",
+ "wasm-bindgen",
  "web-sys",
  "yew",
 ]
