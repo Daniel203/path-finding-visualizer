@@ -1,5 +1,3 @@
-use std::borrow::Borrow;
-
 use web_sys::MouseEvent;
 use yew::{classes, function_component, html, use_state, Callback, Html, UseStateHandle};
 

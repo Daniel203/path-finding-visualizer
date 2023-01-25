@@ -17,6 +17,10 @@ table {
     background-color: blue;
 }
 
+.cell-path{
+    background-color: coral;
+}
+
 .cell-wall{
     background-color: black;
 }

@@ -14,6 +14,7 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> i32 {
     let width = matrix.matrix[0].len();
 
     let mut visited_: Vec<Vec<Option<(isize, isize)>>> = Vec::new();
+
     for _ in 0..height {
         let mut row = Vec::new();
         for _ in 0..width {
@@ -21,9 +22,7 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> i32 {
         }
         visited_.push(row);
     }
-    visited_[start.1 as usize][start.0 as usize] = Some((start.1, start.0));
 
-    //let mut visited: HashSet<(isize, isize)> = HashSet::new();
     let mut queue = VecDeque::from([(0, start)]);
 
     while queue.is_empty() == false {
@@ -31,34 +30,25 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> i32 {
         let coords = coords;
 
         if coords == end {
-            log!("fineeeeee");
+            let (mut prev_x, mut prev_y) = coords;
+
+            while (prev_x, prev_y) != start {
+                let (py, px) = visited_[prev_y as usize][prev_x as usize].unwrap();
+                matrix.set_cell((prev_x, prev_y), Cell::Path);
+
+                prev_y = py;
+                prev_x = px;
+            }
+
             matrix_obj.set(matrix.clone());
             return distance;
         }
 
-        //if visited.contains(&coords) == false {
-        //visited.insert(coords);
-
-        //for neighbour in get_neighbours(matrix.matrix.clone(), coords) {
-        //if visited.contains(&neighbour) == false {
-        //queue.push_back((distance + 1, neighbour));
-        //matrix.set_cell(coords, Cell::Seen);
-
-        ////matrix_obj.set(matrix.clone());
-        //}
-        //}
-        //}
-
         for neighbour in get_neighbours(matrix.matrix.clone(), coords) {
-            log!("2");
             if visited_[neighbour.1 as usize][neighbour.0 as usize].is_none() {
-                log!("3");
-                log!("hey ciao");
                 queue.push_back((distance + 1, neighbour));
                 matrix.set_cell(coords, Cell::Seen);
-
-                visited_[neighbour.0 as usize][neighbour.1 as usize] =
-                    Some((neighbour.1, neighbour.0));
+                visited_[neighbour.1 as usize][neighbour.0 as usize] = Some((coords.1, coords.0));
             }
         }
     }
