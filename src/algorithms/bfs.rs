@@ -16,7 +16,7 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
     let width = matrix.matrix[0].len();
     initialize_visited(height, width, &mut visited);
 
-    while queue.is_empty() == false {
+    while !queue.is_empty() {
         let (distance, coords) = queue.pop_front().unwrap();
 
         if coords == end {
@@ -25,13 +25,14 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
             return Some(distance);
         }
 
-        handle_neighbours(&mut matrix, coords, &mut visited, &mut queue, distance);
+        handle_neighbours(matrix_obj.clone(), &mut matrix, coords, &mut visited, &mut queue, distance);
     }
 
     return None;
 }
 
 fn handle_neighbours(
+    matrix_obj: UseStateHandle<Matrix>,
     matrix: &mut Matrix,
     coords: (isize, isize),
     visited: &mut Vec<Vec<Option<(isize, isize)>>>,
@@ -43,6 +44,7 @@ fn handle_neighbours(
             queue.push_back((distance + 1, neighbour));
             matrix.set_cell(coords, Cell::Seen);
             (*visited)[neighbour.1 as usize][neighbour.0 as usize] = Some((coords.1, coords.0));
+            matrix_obj.set(matrix.clone());
         }
     }
 }
@@ -58,10 +60,13 @@ fn get_neighbours(matrix: Vec<Vec<Cell>>, coords: (isize, isize)) -> Vec<(isize,
 
     // coordinates of the neighbour
     for (n_x, n_y) in directions {
-        if n_x >= 0 && n_x < width && n_y >= 0 && n_y < height {
-            if matrix[n_y as usize][n_x as usize] != Cell::Wall {
-                out.push((n_x, n_y));
-            }
+        if n_x >= 0
+            && n_x < width
+            && n_y >= 0
+            && n_y < height
+            && matrix[n_y as usize][n_x as usize] != Cell::Wall
+        {
+            out.push((n_x, n_y));
         }
     }
 

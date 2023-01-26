@@ -20,17 +20,17 @@ impl Matrix {
         }
     }
 
-    pub fn add_start(&mut self, coords: (isize, isize)) -> () {
+    pub fn add_start(&mut self, coords: (isize, isize)) {
         self.matrix[coords.1 as usize][coords.0 as usize] = Cell::Start;
         self.start = Some(coords);
     }
 
-    pub fn add_end(&mut self, coords: (isize, isize)) -> () {
+    pub fn add_end(&mut self, coords: (isize, isize)) {
         self.matrix[coords.1 as usize][coords.0 as usize] = Cell::End;
         self.end = Some(coords);
     }
 
-    pub fn toggle_cell(&mut self, coords: (isize, isize)) -> () {
+    pub fn toggle_cell(&mut self, coords: (isize, isize)) {
         let cell_type = self.matrix[coords.1 as usize][coords.0 as usize].clone();
 
         match cell_type {
@@ -48,7 +48,7 @@ impl Matrix {
         }
     }
 
-    pub fn set_cell(&mut self, coords: (isize, isize), celltype: Cell) -> () {
+    pub fn set_cell(&mut self, coords: (isize, isize), celltype: Cell) {
         self.matrix[coords.1 as usize][coords.0 as usize] = celltype;
     }
 }

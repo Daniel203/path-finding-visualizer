@@ -1,4 +1,3 @@
-use gloo_console::log;
 use web_sys::MouseEvent;
 use yew::{classes, function_component, html, use_state, Callback, Html, UseStateHandle};
 
@@ -19,7 +18,7 @@ pub fn matrix_component() -> Html {
 
     let on_find_path_clicked: Callback<PFAlgorithms> =
         Callback::from(move |algorithm: PFAlgorithms| {
-            if !matrix_clone.start.is_none() && !matrix_clone.end.is_none() {
+            if matrix_clone.start.is_some() && matrix_clone.end.is_some() {
                 match algorithm {
                     PFAlgorithms::BFS => {
                         bfs(matrix_clone.clone());
@@ -50,7 +49,7 @@ pub fn matrix_component() -> Html {
 }
 
 fn table_row(
-    line: &Vec<Cell>,
+    line: &[Cell],
     matrix_handle: &UseStateHandle<Matrix>,
     mouse_down: &UseStateHandle<bool>,
     y: usize,
@@ -58,7 +57,7 @@ fn table_row(
     return line
         .iter()
         .enumerate()
-        .map(|(x, cell)| table_cell(&matrix_handle, &mouse_down, cell, x, y))
+        .map(|(x, cell)| table_cell(matrix_handle, mouse_down, cell, x, y))
         .collect::<Html>();
 }
 

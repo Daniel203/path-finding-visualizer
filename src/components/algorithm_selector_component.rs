@@ -1,11 +1,7 @@
-use gloo_console::log;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
-use web_sys::{Event, HtmlSelectElement, MouseEvent};
-use yew::{
-    function_component, html, use_effect_with_deps, use_node_ref, use_state, Callback, Html,
-    Properties,
-};
+use web_sys::MouseEvent;
+use yew::{function_component, html, use_state, Callback, Html, Properties};
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct Props {
@@ -27,9 +23,7 @@ pub fn algorithm_selector_component(props: &Props) -> Html {
         let props = props.clone();
 
         move |_| {
-            props
-                .on_find_path_clicked
-                .emit((*selected_algorithm).clone());
+            props.on_find_path_clicked.emit(*selected_algorithm);
         }
     };
 
@@ -44,15 +38,15 @@ pub fn algorithm_selector_component(props: &Props) -> Html {
                             let onclick = {
                                 let selected_algorithm = selected_algorithm.clone();
                                 move |_: MouseEvent | {
-                                    selected_algorithm.set(algorithm.clone())
+                                    selected_algorithm.set(algorithm)
                                 }
                             };
 
                             return html! {
-                                <option {onclick} selected={(*selected_algorithm) == algorithm}>
+                                <option {onclick} selected={*selected_algorithm == algorithm}>
                                         {format!("{:?}", algorithm)}
                                 </option>
-                            }
+                            };
                         })
                     .collect::<Html>()
                 }

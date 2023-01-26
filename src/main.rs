@@ -1,3 +1,5 @@
+#![allow(clippy::needless_return)]
+
 use crate::components::app_component::App;
 
 mod algorithms;
