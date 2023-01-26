@@ -4,7 +4,7 @@ use yew::UseStateHandle;
 
 use crate::models::{cell::Cell, matrix::Matrix};
 
-pub fn bfs<'a>(matrix_obj: UseStateHandle<Matrix>) -> Result<i32, &'a str> {
+pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
     let mut matrix = (*matrix_obj).clone();
     let start = matrix.start.unwrap();
     let end = matrix.end.unwrap();
@@ -22,13 +22,13 @@ pub fn bfs<'a>(matrix_obj: UseStateHandle<Matrix>) -> Result<i32, &'a str> {
         if coords == end {
             write_shortest_path(coords, start, &visited, &mut matrix);
             matrix_obj.set(matrix.clone());
-            return Ok(distance);
+            return Some(distance);
         }
 
         handle_neighbours(&mut matrix, coords, &mut visited, &mut queue, distance);
     }
 
-    return Err("Path not found");
+    return None;
 }
 
 fn handle_neighbours(

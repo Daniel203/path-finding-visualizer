@@ -19,7 +19,6 @@ pub fn matrix_component() -> Html {
 
     let on_find_path_clicked: Callback<PFAlgorithms> =
         Callback::from(move |algorithm: PFAlgorithms| {
-            log!(format!("algo: {algorithm:?}"));
             if !matrix_clone.start.is_none() && !matrix_clone.end.is_none() {
                 match algorithm {
                     PFAlgorithms::BFS => {
