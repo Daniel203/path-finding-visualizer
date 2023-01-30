@@ -1,3 +1,4 @@
+use gloo_timers::callback::Timeout;
 use std::collections::VecDeque;
 
 use yew::UseStateHandle;
@@ -20,12 +21,18 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
         let (distance, coords) = queue.pop_front().unwrap();
 
         if coords == end {
-            write_shortest_path(coords, start, &visited, &mut matrix);
-            matrix_obj.set(matrix.clone());
+            write_shortest_path(coords, start, &visited, &mut matrix, &matrix_obj);
             return Some(distance);
         }
 
-        handle_neighbours(matrix_obj.clone(), &mut matrix, coords, &mut visited, &mut queue, distance);
+        handle_neighbours(
+            matrix_obj.clone(),
+            &mut matrix,
+            coords,
+            &mut visited,
+            &mut queue,
+            distance,
+        );
     }
 
     return None;
@@ -42,11 +49,20 @@ fn handle_neighbours(
     for neighbour in get_neighbours(matrix.matrix.clone(), coords) {
         if (*visited)[neighbour.1 as usize][neighbour.0 as usize].is_none() {
             queue.push_back((distance + 1, neighbour));
-            matrix.set_cell(coords, Cell::Seen);
             (*visited)[neighbour.1 as usize][neighbour.0 as usize] = Some((coords.1, coords.0));
-            matrix_obj.set(matrix.clone());
+
+            matrix.set_cell(coords, Cell::Seen);
         }
     }
+
+    render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+}
+
+fn render_new_matrix_state(matrix_obj: UseStateHandle<Matrix>, matrix: Matrix) {
+    Timeout::new(0, move || {
+        matrix_obj.set(matrix.clone());
+    })
+    .forget();
 }
 
 fn get_neighbours(matrix: Vec<Vec<Cell>>, coords: (isize, isize)) -> Vec<(isize, isize)> {
@@ -78,16 +94,25 @@ fn write_shortest_path(
     start: (isize, isize),
     visited: &Vec<Vec<Option<(isize, isize)>>>,
     matrix: &mut Matrix,
+    matrix_obj: &UseStateHandle<Matrix>,
 ) {
     let (mut prev_x, mut prev_y) = coords;
+    let mut path: Vec<(isize, isize)> = Vec::new();
 
+    // get the shortest path
     while (prev_x, prev_y) != start {
         let (py, px) = (*visited)[prev_y as usize][prev_x as usize].unwrap();
-        matrix.set_cell((prev_x, prev_y), Cell::Path);
+        path.push((py, px));
 
         prev_y = py;
         prev_x = px;
     }
+
+    // draw the path
+    path.iter().rev().for_each(|(y, x)| {
+        matrix.set_cell((*x, *y), Cell::Path);
+        render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+    });
 }
 
 fn initialize_visited(height: usize, width: usize, visited: &mut Vec<Vec<Option<(isize, isize)>>>) {

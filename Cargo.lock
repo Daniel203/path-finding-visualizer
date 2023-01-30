@@ -399,6 +399,7 @@ name = "path_finding_visualizer"
 version = "0.1.0"
 dependencies = [
  "gloo-console",
+ "gloo-timers",
  "strum",
  "strum_macros",
  "wasm-bindgen",
