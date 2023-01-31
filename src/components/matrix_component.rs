@@ -3,6 +3,7 @@ use yew::{classes, function_component, html, use_state, Callback, Html, UseState
 
 use crate::{
     algorithms::bfs::bfs,
+    algorithms::dfs::dfs,
     components::algorithm_selector_component::AlgorithmSelectorComponent,
     models::{cell::Cell, matrix::Matrix},
 };
@@ -23,7 +24,9 @@ pub fn matrix_component() -> Html {
                     PFAlgorithms::BFS => {
                         bfs(matrix_clone.clone());
                     }
-                    PFAlgorithms::DFS => todo!(),
+                    PFAlgorithms::DFS => {
+                        dfs(matrix_clone.clone());
+                    }
                 }
             }
         });

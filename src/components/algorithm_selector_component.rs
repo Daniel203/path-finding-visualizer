@@ -16,7 +16,7 @@ pub enum PFAlgorithms {
 
 #[function_component(AlgorithmSelectorComponent)]
 pub fn algorithm_selector_component(props: &Props) -> Html {
-    let selected_algorithm = use_state(|| PFAlgorithms::BFS);
+    let selected_algorithm = use_state(|| PFAlgorithms::DFS);
 
     let onclick = {
         let selected_algorithm = selected_algorithm.clone();
