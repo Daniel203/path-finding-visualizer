@@ -4,8 +4,8 @@ use crate::components::app_component::App;
 
 mod algorithms;
 mod components;
-mod models;
 mod constraints;
+mod models;
 
 fn main() {
     yew::set_event_bubbling(false);

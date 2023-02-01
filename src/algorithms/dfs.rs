@@ -27,7 +27,9 @@ pub fn dfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
             return Some(distance);
         }
 
-        matrix.set_cell(curr_coords, Cell::Visited);
+        if curr_coords != start {
+            matrix.set_cell(curr_coords, Cell::Visited);
+        }
         render_new_matrix_state(matrix_obj.clone(), matrix.clone());
 
         for neighbour in get_neighbours(&matrix, curr_coords) {
@@ -45,7 +47,7 @@ fn get_neighbours(matrix: &Matrix, coords: (isize, isize)) -> Vec<(isize, isize)
     let height = matrix.clone().height() as isize;
 
     let (x, y) = coords;
-    let directions: Vec<(isize, isize)> = vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)];
+    let directions: Vec<(isize, isize)> = vec![(x - 1, y), (x + 1, y), (x, y + 1), (x, y - 1)];
 
     let mut out: Vec<(isize, isize)> = Vec::new();
 
@@ -78,7 +80,7 @@ fn write_shortest_path(
     matrix: &mut Matrix,
     matrix_obj: &UseStateHandle<Matrix>,
 ) {
-    let (mut next_x, mut next_y) = start;
+    let (mut next_x, mut next_y) = visited[start.1 as usize][start.0 as usize].unwrap();
 
     while (next_x, next_y) != end {
         matrix.set_cell((next_x, next_y), Cell::Path);

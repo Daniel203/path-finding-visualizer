@@ -38,9 +38,20 @@ pub fn matrix_component() -> Html {
         matrix_for_reset_board.set(new_matrix);
     });
 
+    let matrix_for_reset_board_visited = matrix_handle.clone();
+    let on_reset_board_visited_clicked: Callback<()> = Callback::from(move |_| {
+        let mut new_matrix = (*matrix_for_reset_board_visited).clone();
+        new_matrix.reset_visited_and_path();
+        matrix_for_reset_board_visited.set(new_matrix);
+    });
+
     html! {
         <div>
-            <AlgorithmSelectorComponent {on_find_path_clicked} {on_reset_board_clicked} />
+            <AlgorithmSelectorComponent
+                {on_find_path_clicked}
+                {on_reset_board_clicked}
+                {on_reset_board_visited_clicked}
+            />
             <table>
             {
                 matrix_handle.matrix

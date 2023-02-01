@@ -1,17 +1,17 @@
 :root {
-    --background_color: #303030;
+    --background_color: #212322;
 
     --visited: #219ebc;
-    --wall: #a8a8a8;
+    --wall: #5C6975;
     --start: #d62828;
     --end: #faa307;
     --path: #fb8500;
 
-    --cell_border: #afd8f8;
+    --cell_border: #465059;
     --cell_size: 35px;
 
-    --button: #838291;
-    --button_hover: #948594;
+    --button: #465059;
+    --button_hover: #677683;
 }
 
 body {

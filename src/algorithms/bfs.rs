@@ -29,7 +29,10 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
             if visited[neighbour.1 as usize][neighbour.0 as usize].is_none() {
                 queue.push_back((distance + 1, neighbour));
                 visited[neighbour.1 as usize][neighbour.0 as usize] = Some(coords);
-                matrix.set_cell(neighbour, Cell::Visited);
+
+                if neighbour != start && neighbour != end {
+                    matrix.set_cell(neighbour, Cell::Visited);
+                }
             }
         }
 
@@ -79,12 +82,14 @@ fn write_shortest_path(
 ) {
     let (mut prev_x, mut prev_y) = coords;
     let mut path: Vec<(isize, isize)> = Vec::new();
-    path.push(coords);
 
     // get the shortest path
     while (prev_x, prev_y) != start {
         let (px, py) = visited[prev_y as usize][prev_x as usize].unwrap();
-        path.push((px, py));
+
+        if (px, py) != start {
+            path.push((px, py));
+        }
 
         prev_y = py;
         prev_x = px;

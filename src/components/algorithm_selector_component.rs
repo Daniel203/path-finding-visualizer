@@ -9,6 +9,7 @@ use yew::{classes, function_component, html, use_state, Callback, Html, Properti
 pub struct Props {
     pub on_find_path_clicked: Callback<PFAlgorithms>,
     pub on_reset_board_clicked: Callback<()>,
+    pub on_reset_board_visited_clicked: Callback<()>,
 }
 
 #[derive(Debug, Copy, Clone, EnumIter, Eq, PartialEq)]
@@ -28,7 +29,6 @@ impl Display for PFAlgorithms {
     }
 }
 
-
 #[function_component(AlgorithmSelectorComponent)]
 pub fn algorithm_selector_component(props: &Props) -> Html {
     let selected_algorithm = use_state(|| PFAlgorithms::NotSelected);
@@ -36,7 +36,6 @@ pub fn algorithm_selector_component(props: &Props) -> Html {
     let on_find_click = {
         let selected_algorithm = selected_algorithm.clone();
         let props = props.clone();
-
         move |_| {
             props.on_find_path_clicked.emit(*selected_algorithm);
         }
@@ -44,9 +43,15 @@ pub fn algorithm_selector_component(props: &Props) -> Html {
 
     let on_reset_click = {
         let props = props.clone();
-
         move |_| {
             props.on_reset_board_clicked.emit(());
+        }
+    };
+
+    let on_reset_visited_click = {
+        let props = props.clone();
+        move |_| {
+            props.on_reset_board_visited_clicked.emit(());
         }
     };
 
@@ -77,6 +82,7 @@ pub fn algorithm_selector_component(props: &Props) -> Html {
 
             <button class={classes!("button")} onclick={on_reset_click}>{"Reset board"}</button>
 
+            <button class={classes!("button")} onclick={on_reset_visited_click}>{"Reset path"}</button>
         </div>
     }
 }

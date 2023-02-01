@@ -76,4 +76,14 @@ impl Matrix {
     pub fn width(&self) -> usize {
         return self.matrix[0].len();
     }
+
+    pub fn reset_visited_and_path(&mut self) {
+        for (y, line) in self.clone().matrix.iter().enumerate() {
+            for (x, cell) in line.iter().enumerate() {
+                if cell == &Cell::Visited || cell == &Cell::Path {
+                    self.set_cell((x as isize, y as isize), Cell::UnVisited);
+                }
+            }
+        }
+    }
 }
