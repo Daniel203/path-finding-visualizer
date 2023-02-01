@@ -5,6 +5,7 @@ use crate::{
     algorithms::bfs::bfs,
     algorithms::dfs::dfs,
     components::algorithm_selector_component::AlgorithmSelectorComponent,
+    constraints::{BOARD_HEIGHT, BOARD_WIDTH},
     models::{cell::Cell, matrix::Matrix},
 };
 
@@ -12,28 +13,34 @@ use super::algorithm_selector_component::PFAlgorithms;
 
 #[function_component(MatrixComponent)]
 pub fn matrix_component() -> Html {
-    let matrix_handle = use_state(|| Matrix::new(40, 20));
+    let matrix_handle = use_state(|| Matrix::new(BOARD_WIDTH, BOARD_HEIGHT));
     let mouse_down = use_state(|| false);
 
-    let matrix_clone = matrix_handle.clone();
-
+    let matrix_for_find_path = matrix_handle.clone();
     let on_find_path_clicked: Callback<PFAlgorithms> =
         Callback::from(move |algorithm: PFAlgorithms| {
-            if matrix_clone.start.is_some() && matrix_clone.end.is_some() {
+            if matrix_for_find_path.start.is_some() && matrix_for_find_path.end.is_some() {
                 match algorithm {
+                    PFAlgorithms::NotSelected => (),
                     PFAlgorithms::BFS => {
-                        bfs(matrix_clone.clone());
+                        bfs(matrix_for_find_path.clone());
                     }
                     PFAlgorithms::DFS => {
-                        dfs(matrix_clone.clone());
+                        dfs(matrix_for_find_path.clone());
                     }
                 }
             }
         });
 
+    let matrix_for_reset_board = matrix_handle.clone();
+    let on_reset_board_clicked: Callback<()> = Callback::from(move |_| {
+        let new_matrix = Matrix::new(BOARD_WIDTH, BOARD_HEIGHT);
+        matrix_for_reset_board.set(new_matrix);
+    });
+
     html! {
         <div>
-            <AlgorithmSelectorComponent {on_find_path_clicked} />
+            <AlgorithmSelectorComponent {on_find_path_clicked} {on_reset_board_clicked} />
             <table>
             {
                 matrix_handle.matrix
