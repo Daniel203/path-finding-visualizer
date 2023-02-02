@@ -49,7 +49,7 @@ fn get_neighbours(matrix: &Matrix, coords: (isize, isize)) -> Vec<(isize, isize)
     let (x, y) = coords;
     let directions: Vec<(isize, isize)> = vec![(x - 1, y), (x + 1, y), (x, y + 1), (x, y - 1)];
 
-    let mut out: Vec<(isize, isize)> = Vec::new();
+    let mut neighbours: Vec<(isize, isize)> = Vec::new();
 
     // coordinates of the neighbour
     for (n_x, n_y) in directions {
@@ -59,11 +59,11 @@ fn get_neighbours(matrix: &Matrix, coords: (isize, isize)) -> Vec<(isize, isize)
             && n_y < height
             && matrix.get_cell((n_x, n_y)) != Some(Cell::Wall)
         {
-            out.push((n_x, n_y));
+            neighbours.push((n_x, n_y));
         }
     }
 
-    return out;
+    return neighbours;
 }
 
 fn render_new_matrix_state(matrix_obj: UseStateHandle<Matrix>, matrix: Matrix) {

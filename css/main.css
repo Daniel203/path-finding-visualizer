@@ -2,6 +2,7 @@
     --background_color: #212322;
 
     --visited: #219ebc;
+    --visited_new: #39bcdb;
     --wall: #5C6975;
     --start: #d62828;
     --end: #faa307;
@@ -105,11 +106,11 @@ table {
 @keyframes visitedAnimation {
     0% {
         transform: scale(.3);
-        blackground-color: var(--visited);
+        blackground-color: var(--visited_new);
     }
     50% {
         transform: scale(1.2);
-        background-color: var(--visited);
+        background-color: var(--visited_new);
     }
     100% {
         transform: scale(1.0);

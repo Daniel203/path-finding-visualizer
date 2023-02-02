@@ -1,32 +1,14 @@
-use std::fmt::Display;
-
 use strum::IntoEnumIterator;
-use strum_macros::EnumIter;
 use web_sys::MouseEvent;
 use yew::{classes, function_component, html, use_state, Callback, Html, Properties};
+
+use crate::algorithms::PFAlgorithms;
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct Props {
     pub on_find_path_clicked: Callback<PFAlgorithms>,
     pub on_reset_board_clicked: Callback<()>,
     pub on_reset_board_visited_clicked: Callback<()>,
-}
-
-#[derive(Debug, Copy, Clone, EnumIter, Eq, PartialEq)]
-pub enum PFAlgorithms {
-    NotSelected,
-    BFS,
-    DFS,
-}
-
-impl Display for PFAlgorithms {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            PFAlgorithms::NotSelected => write!(f, "Select an algorithm"),
-            PFAlgorithms::BFS => write!(f, "BFS"),
-            PFAlgorithms::DFS => write!(f, "DFS"),
-        }
-    }
 }
 
 #[function_component(AlgorithmSelectorComponent)]
@@ -79,9 +61,7 @@ pub fn algorithm_selector_component(props: &Props) -> Html {
             </select>
 
             <button class={classes!("button")} onclick={on_find_click}>{"Find"}</button>
-
             <button class={classes!("button")} onclick={on_reset_click}>{"Reset board"}</button>
-
             <button class={classes!("button")} onclick={on_reset_visited_click}>{"Reset path"}</button>
         </div>
     }

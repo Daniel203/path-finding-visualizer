@@ -63,13 +63,13 @@ impl Matrix {
     }
 
     fn is_valid_coords(&self, coords: (isize, isize)) -> bool {
-        let height = self.matrix.len() as isize;
-        let width = self.matrix[0].len() as isize;
-
-        return coords.0 >= 0 && coords.1 >= 0 && coords.0 < width && coords.1 < height;
+        return coords.0 >= 0
+            && coords.1 >= 0
+            && coords.0 < self.width() as isize
+            && coords.1 < self.height() as isize;
     }
 
-    pub fn height(self) -> usize {
+    pub fn height(&self) -> usize {
         return self.matrix.len();
     }
 

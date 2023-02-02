@@ -2,14 +2,11 @@ use web_sys::MouseEvent;
 use yew::{classes, function_component, html, use_state, Callback, Html, UseStateHandle};
 
 use crate::{
-    algorithms::bfs::bfs,
-    algorithms::dfs::dfs,
+    algorithms::{a_star::a_star, a_star_search::a_star_search, bfs::bfs, dfs::dfs, PFAlgorithms},
     components::algorithm_selector_component::AlgorithmSelectorComponent,
     constraints::{BOARD_HEIGHT, BOARD_WIDTH},
     models::{cell::Cell, matrix::Matrix},
 };
-
-use super::algorithm_selector_component::PFAlgorithms;
 
 #[function_component(MatrixComponent)]
 pub fn matrix_component() -> Html {
@@ -27,6 +24,12 @@ pub fn matrix_component() -> Html {
                     }
                     PFAlgorithms::DFS => {
                         dfs(matrix_for_find_path.clone());
+                    }
+                    PFAlgorithms::AStar => {
+                        a_star(matrix_for_find_path.clone());
+                    }
+                    PFAlgorithms::AStarSearch => {
+                        a_star_search(matrix_for_find_path.clone());
                     }
                 }
             }
