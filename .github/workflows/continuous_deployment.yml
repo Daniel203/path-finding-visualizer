@@ -4,6 +4,10 @@ on:
     branches: [main]
     workflows: [Continuous Integration]
     types: [completed]
+  
+permissions:
+  contents: write
+  repository-projects: write
 
 jobs:
   release:
