@@ -19,10 +19,10 @@ pub fn matrix_component() -> Html {
             if matrix_for_find_path.start.is_some() && matrix_for_find_path.end.is_some() {
                 match algorithm {
                     PFAlgorithms::NotSelected => (),
-                    PFAlgorithms::BFS => {
+                    PFAlgorithms::Bfs => {
                         bfs(matrix_for_find_path.clone());
                     }
-                    PFAlgorithms::DFS => {
+                    PFAlgorithms::Dfs => {
                         dfs(matrix_for_find_path.clone());
                     }
                     PFAlgorithms::AStar => {

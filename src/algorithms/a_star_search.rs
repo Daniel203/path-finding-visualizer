@@ -54,7 +54,7 @@ pub fn a_star_search(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
 
     while !frontier.is_empty() {
         let curr = frontier.pop().unwrap();
-        let coords = curr.clone().coords;
+        let coords = curr.coords;
 
         if coords == end {
             write_shortest_path(came_from, start, end, &mut matrix, &matrix_obj);
