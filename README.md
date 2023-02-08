@@ -39,10 +39,11 @@ Path finding algorithms:
 
 Maze generation algorithms: 
 - [x] Binary tree
+- [x] DFS
 
 
 ### TODO
-- [ ] Implement more algorithms
-- [ ] Implement algorithms for maze generation
+- [ ] Implement more algorithms for path finding
+- [ ] Implement more algorithms for maze generation
 - [ ] Implement an animation speed selector
 - [ ] Fix some bugs in the UI 

@@ -62,6 +62,14 @@ impl Matrix {
         }
     }
 
+    pub fn set_all_cells(&mut self, celltype: Cell) {
+        for y in 0..self.height() as isize {
+            for x in 0..self.width() as isize {
+                self.set_cell((x, y), celltype.clone());
+            }
+        }
+    }
+
     pub fn is_valid_coords(&self, coords: (isize, isize)) -> bool {
         return coords.0 >= 0
             && coords.1 >= 0

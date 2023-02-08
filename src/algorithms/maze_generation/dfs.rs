@@ -11,6 +11,8 @@ pub fn dfs(matrix_obj: UseStateHandle<Matrix>) {
     let mut queue: VecDeque<(isize, isize)>;
     let mut visited: Vec<(isize, isize)> = Vec::new();
 
+    matrix.set_all_cells(Cell::Wall);
+
     let start = get_random_cell(&mut matrix);
     queue = VecDeque::from([start]);
 
@@ -27,8 +29,8 @@ pub fn dfs(matrix_obj: UseStateHandle<Matrix>) {
                     curr.1 + isize::signum(neighbour.1 - curr.1),
                 );
 
-                matrix.set_cell(*neighbour, Cell::Wall);
-                matrix.set_cell(connection, Cell::Wall);
+                matrix.set_cell(*neighbour, Cell::UnVisited);
+                matrix.set_cell(connection, Cell::UnVisited);
             }
 
             neighbours.shuffle(&mut thread_rng());
@@ -48,7 +50,7 @@ fn get_random_cell(matrix: &mut Matrix) -> (isize, isize) {
     let mut coords = (-1, -1);
     let mut rng = rand::thread_rng();
 
-    while !matrix.is_valid_coords(coords) || matrix.get_cell(coords) != Some(Cell::UnVisited) {
+    while !matrix.is_valid_coords(coords) || matrix.get_cell(coords) != Some(Cell::Wall) {
         let x = rng.gen_range(0..matrix.width() as isize);
         let y = rng.gen_range(0..matrix.height() as isize);
         coords = (x, y)
@@ -72,7 +74,7 @@ fn get_neighbours(matrix: &Matrix, coords: (isize, isize)) -> Vec<(isize, isize)
             && n_x < width
             && n_y >= 0
             && n_y < height
-            && matrix.get_cell((n_x, n_y)) != Some(Cell::Wall)
+            && matrix.get_cell((n_x, n_y)) != Some(Cell::UnVisited)
             && matrix.get_cell((n_x, n_y)) != Some(Cell::Start)
             && matrix.get_cell((n_x, n_y)) != Some(Cell::End)
         {

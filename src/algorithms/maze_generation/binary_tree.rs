@@ -6,13 +6,14 @@ use crate::models::{cell::Cell, matrix::Matrix};
 
 pub fn binary_tree(matrix_obj: UseStateHandle<Matrix>) {
     let mut matrix = (*matrix_obj).clone();
+    matrix.set_all_cells(Cell::Wall);
 
     let mut y: isize = 0;
     while y < matrix.height() as isize {
         let mut x: isize = 0;
 
         while x < matrix.width() as isize {
-            matrix.set_cell((x, y), Cell::Wall);
+            matrix.set_cell((x, y), Cell::UnVisited);
             let mut neighbours: Vec<(isize, isize)> = Vec::new();
 
             // get west neighbour
@@ -51,7 +52,7 @@ fn get_neighbour_in_direction(
 ) -> Option<(isize, isize)> {
     let neighbour: (isize, isize) = (curr_position.0 + direction.0, curr_position.1 + direction.1);
 
-    if matrix.is_valid_coords(neighbour) && matrix.get_cell(neighbour) == Some(Cell::Wall) {
+    if matrix.is_valid_coords(neighbour) && matrix.get_cell(neighbour) == Some(Cell::UnVisited) {
         return Some(neighbour);
     }
 
@@ -65,7 +66,7 @@ fn select_random_neighbour(
     neighbours.shuffle(&mut thread_rng());
 
     let neighbour = neighbours.first().unwrap();
-    matrix.set_cell(*neighbour, Cell::Wall);
+    matrix.set_cell(*neighbour, Cell::UnVisited);
 
     *neighbour
 }
@@ -79,8 +80,8 @@ fn connect_cells(neighbour: (isize, isize), matrix: &mut Matrix, x: isize, y: is
         connection = (x - 1, y);
     }
 
-    if matrix.get_cell(connection) == Some(Cell::UnVisited) {
-        matrix.set_cell(connection, Cell::Wall);
+    if matrix.get_cell(connection) == Some(Cell::Wall) {
+        matrix.set_cell(connection, Cell::UnVisited);
     }
 }
 
