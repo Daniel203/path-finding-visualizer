@@ -62,7 +62,7 @@ impl Matrix {
         }
     }
 
-    fn is_valid_coords(&self, coords: (isize, isize)) -> bool {
+    pub fn is_valid_coords(&self, coords: (isize, isize)) -> bool {
         return coords.0 >= 0
             && coords.1 >= 0
             && coords.0 < self.width() as isize

@@ -1,2 +1,2 @@
-pub const BOARD_WIDTH: isize = 40;
-pub const BOARD_HEIGHT: isize = 20;
+pub const BOARD_WIDTH: isize = 41;
+pub const BOARD_HEIGHT: isize = 21;

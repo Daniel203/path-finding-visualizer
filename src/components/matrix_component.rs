@@ -2,7 +2,12 @@ use web_sys::MouseEvent;
 use yew::{classes, function_component, html, use_state, Callback, Html, UseStateHandle};
 
 use crate::{
-    algorithms::{a_star::a_star, a_star_search::a_star_search, bfs::bfs, dfs::dfs, PFAlgorithms},
+    algorithms::{
+        maze_generation,
+        maze_generation::MGAlgorithms,
+        path_finding,
+        path_finding::{a_star::a_star, a_star_search::a_star_search, bfs::bfs, PFAlgorithms},
+    },
     components::algorithm_selector_component::AlgorithmSelectorComponent,
     constraints::{BOARD_HEIGHT, BOARD_WIDTH},
     models::{cell::Cell, matrix::Matrix},
@@ -23,7 +28,7 @@ pub fn matrix_component() -> Html {
                         bfs(matrix_for_find_path.clone());
                     }
                     PFAlgorithms::Dfs => {
-                        dfs(matrix_for_find_path.clone());
+                        path_finding::dfs::dfs(matrix_for_find_path.clone());
                     }
                     PFAlgorithms::AStar => {
                         a_star(matrix_for_find_path.clone());
@@ -32,6 +37,15 @@ pub fn matrix_component() -> Html {
                         a_star_search(matrix_for_find_path.clone());
                     }
                 }
+            }
+        });
+
+    let matrix_for_maze_generation = matrix_handle.clone();
+    let on_generate_maze_clicked: Callback<MGAlgorithms> =
+        Callback::from(move |algorithm: MGAlgorithms| match algorithm {
+            MGAlgorithms::NotSelected => (),
+            MGAlgorithms::BinaryTree => {
+                maze_generation::binary_tree::binary_tree(matrix_for_maze_generation.clone());
             }
         });
 
@@ -52,6 +66,7 @@ pub fn matrix_component() -> Html {
         <div>
             <AlgorithmSelectorComponent
                 {on_find_path_clicked}
+                {on_generate_maze_clicked}
                 {on_reset_board_clicked}
                 {on_reset_board_visited_clicked}
             />
