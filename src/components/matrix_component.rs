@@ -47,6 +47,9 @@ pub fn matrix_component() -> Html {
             MGAlgorithms::BinaryTree => {
                 maze_generation::binary_tree::binary_tree(matrix_for_maze_generation.clone());
             }
+            MGAlgorithms::Dfs => {
+                maze_generation::dfs::dfs(matrix_for_maze_generation.clone());
+            }
         });
 
     let matrix_for_reset_board = matrix_handle.clone();

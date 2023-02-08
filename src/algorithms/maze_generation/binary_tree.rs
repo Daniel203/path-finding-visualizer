@@ -1,3 +1,4 @@
+use gloo_timers::callback::Timeout;
 use rand::{seq::SliceRandom, thread_rng};
 use yew::UseStateHandle;
 
@@ -32,13 +33,15 @@ pub fn binary_tree(matrix_obj: UseStateHandle<Matrix>) {
                 connect_cells(neighbour, &mut matrix, x, y);
             }
 
+            render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+
             x += 2;
         }
 
         y += 2;
     }
 
-    matrix_obj.set(matrix.clone());
+    render_new_matrix_state(matrix_obj, matrix);
 }
 
 fn get_neighbour_in_direction(
@@ -79,4 +82,11 @@ fn connect_cells(neighbour: (isize, isize), matrix: &mut Matrix, x: isize, y: is
     if matrix.get_cell(connection) == Some(Cell::UnVisited) {
         matrix.set_cell(connection, Cell::Wall);
     }
+}
+
+fn render_new_matrix_state(matrix_obj: UseStateHandle<Matrix>, matrix: Matrix) {
+    Timeout::new(0, move || {
+        matrix_obj.set(matrix.clone());
+    })
+    .forget();
 }

@@ -1,5 +1,8 @@
 # Path Finding Visualizer
-A website that allows you to visualize some path finding algorithms
+A website that allows you to visualize some path finding algorithms.
+
+Try it out using this link: [https://daniel203.github.io/path-finding-visualizer/](https://daniel203.github.io/path-finding-visualizer/)
+
 
 ### Description
 It's a website written in rust using the [yew](https://yew.rs/) crate. <br>
@@ -28,10 +31,14 @@ trunk serve
 
 
 ### Implemented algorithms
+Path finding algorithms: 
 - [x] BFS (Breadth First Search)
 - [x] DFS (Depth First Search)
 - [x] A*
 - [x] A* Search
+
+Maze generation algorithms: 
+- [x] Binary tree
 
 
 ### TODO
