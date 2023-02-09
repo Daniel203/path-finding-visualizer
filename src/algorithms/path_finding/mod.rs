@@ -19,7 +19,7 @@ pub enum PFAlgorithms {
 impl Display for PFAlgorithms {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            PFAlgorithms::NotSelected => write!(f, "Select an algorithm"),
+            PFAlgorithms::NotSelected => write!(f, "Path-Finding Algorithm"),
             PFAlgorithms::Bfs => write!(f, "BFS"),
             PFAlgorithms::Dfs => write!(f, "DFS"),
             PFAlgorithms::AStar => write!(f, "A*"),

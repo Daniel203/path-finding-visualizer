@@ -61,7 +61,7 @@ pub fn matrix_component() -> Html {
     let matrix_for_reset_board_visited = matrix_handle.clone();
     let on_reset_board_visited_clicked: Callback<()> = Callback::from(move |_| {
         let mut new_matrix = (*matrix_for_reset_board_visited).clone();
-        new_matrix.reset_visited_and_path();
+        new_matrix.replace_cells(vec![Cell::Path, Cell::Visited], Cell::UnVisited);
         matrix_for_reset_board_visited.set(new_matrix);
     });
 
@@ -168,9 +168,9 @@ fn handle_cell_clicked(matrix_handle: &UseStateHandle<Matrix>, x: usize, y: usiz
     let mut new_matrix = (**matrix_handle).clone();
     let coords = (x as isize, y as isize);
 
-    if new_matrix.start.is_none() {
+    if new_matrix.start.is_none() && new_matrix.get_cell(coords) != Some(Cell::End) {
         new_matrix.add_start(coords);
-    } else if new_matrix.end.is_none() {
+    } else if new_matrix.end.is_none() && new_matrix.get_cell(coords) != Some(Cell::Start) {
         new_matrix.add_end(coords);
     } else {
         new_matrix.toggle_cell(coords);

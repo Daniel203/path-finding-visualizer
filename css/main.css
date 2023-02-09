@@ -1,28 +1,25 @@
 :root {
     --background_color: #212322;
-
-    --visited: #219ebc;
-    --visited_new: #39bcdb;
-    --wall: #5C6975;
-    --start: #d62828;
-    --end: #faa307;
-    --path: #fb8500;
-
-    --cell_border: #465059;
     --cell_size: 25px;
 
-    --button: #465059;
-    --button_hover: #677683;
+    --yellow: #eab308;
+    --red: #dc2626;
+    --dark_red: #b91c1c;
+    --orange: #ea580c;
+    --dark_orange: #c2410c;
+    --green: #16a34a;
+    --dark_green: #15803d;
+    --blue: #6699CC;
+    --light_blue: #60a5fa;
+    --dark_blue: #1d4ed8;
+    --gray: #6b7280;
+    --light_gray: #9ca3af;
+    --dark_gray: #374151;
 }
+
 
 body {
     background: var(--background_color);
-}
-
-.cell {
-    width: var(--cell_size); 
-    height: var(--cell_size);
-    border: 1px solid var(--cell_border);
 }
 
 table {
@@ -30,38 +27,65 @@ table {
     margin-top: 30px;
 }
 
-.button {
-    background-color: var(--button); 
+
+/***** BUTTONS *****/
+.btn {
+    background-color: var(--gray); 
     border: none;
     color: white;
-    padding: 15px 32px;
-    margin: 4px 2px;
-    text-align: center;
-    text-decoration: none;
+    padding: 15px;
+    margin: 4px 4px;
     display: inline-block;
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 7px;
+    transition: background-color 0.2s ease;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.btn:hover {
+    background-color: var(--dark_gray);
     cursor: pointer;
 }
 
-.button:hover {
-    background-color: var(--button_hover);
+.btn.green {
+  background-color: var(--green);
 }
 
-.selector {
-    background-color: var(--button); 
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    margin: 4px 2px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
+.btn.blue {
+  background-color: var(--blue);
 }
 
-.selector:hover {
-    background-color: var(--button_hover);
+.btn.red {
+  background-color: var(--red);
+}
+
+.btn.orange {
+  background-color: var(--orange);
+}
+
+.btn.green:hover {
+  background-color: var(--dark_green);
+}
+
+.btn.blue:hover {
+  background-color: var(--dark_blue);
+}
+
+.btn.red:hover {
+  background-color: var(--dark_red);
+}
+
+.btn.orange:hover {
+  background-color: var(--dark_orange);
+}
+
+
+/***** CELLS *****/
+.cell {
+    width: var(--cell_size); 
+    height: var(--cell_size);
+    border: 1px solid var(--dark_gray);
 }
 
 .cell-unvisited{
@@ -69,111 +93,129 @@ table {
 }
 
 .cell-visited{
-    background-color: var(--visited);
+    background-color: var(--light_blue);
     animation-name: visitedAnimation;
     animation-duration: 0.3s;
     animation-timing-function: ease-out;
 }
 
 .cell-path{
-    background-color: var(--path);
+    background-color: var(--yellow);
     animation-name: pathAnimation;
     animation-duration: 0.3s;
     animation-timing-function: ease-out;
 }
 
 .cell-wall{
-    background-color: var(--wall);
+    background-color: var(--gray);
     animation-name: wallAnimation;
     animation-duration: 0.3s;
     animation-timing-function: ease-out;
 }
 
 .cell-start{
-    background-color: var(--start);
+    background-color: var(--red);
     animation-name: startAnimation;
     animation-duration: 0.3s;
     animation-timing-function: ease-out;
 }
 
 .cell-end{
-    background-color: var(--end);
+    background-color: var(--orange);
     animation-name: endAnimation;
     animation-duration: 0.3s;
     animation-timing-function: ease-out;
 }
 
+
+/***** ANIMATIONS *****/
 @keyframes visitedAnimation {
     0% {
         transform: scale(.3);
-        blackground-color: var(--visited_new);
+        blackground-color: var(--dark_blue);
     }
     50% {
         transform: scale(1.2);
-        background-color: var(--visited_new);
+        background-color: var(--dark_blue);
     }
     100% {
         transform: scale(1.0);
-        background-color: var(--visited);
+        background-color: var(--light_blue);
     }
 }
 
 @keyframes pathAnimation {
     0% {
-        transform: scale(.3);
-        blackground-color: var(--path);
+        transform: scale(1.0);
+        blackground-color: var(--yellow);
     }
     50% {
         transform: scale(1.2);
-        background-color: var(--path);
+        background-color: var(--yellow);
     }
     100% {
         transform: scale(1.0);
-        background-color: var(--path);
+        background-color: var(--yellow);
     }
 }
 
 @keyframes wallAnimation {
     0% {
         transform: scale(.3);
-        blackground-color: var(--wall);
+        blackground-color: var(--gray);
     }
     50% {
         transform: scale(1.2);
-        background-color: var(--wall);
+        background-color: var(--gray);
     }
     100% {
         transform: scale(1.0);
-        background-color: var(--wall);
+        background-color: var(--gray);
     }
 }
 
 @keyframes startAnimation {
     0% {
         transform: scale(.3);
-        blackground-color: var(--start);
+        blackground-color: var(--red);
     }
     50% {
         transform: scale(1.2);
-        background-color: var(--start);
+        background-color: var(--red);
     }
     100% {
         transform: scale(1.0);
-        background-color: var(--start);
+        background-color: var(--red);
     }
 }
 
 @keyframes endAnimation {
     0% {
         transform: scale(.3);
-        blackground-color: var(--end);
+        blackground-color: var(--orange);
     }
     50% {
         transform: scale(1.2);
-        background-color: var(--end);
+        background-color: var(--orange);
     }
     100% {
         transform: scale(1.0);
-        background-color: var(--end);
+        background-color: var(--orange);
     }
+}
+
+/***** SEPARATORS *****/
+.v-separator-sm {
+  width: 10px;
+  display: inline-block;
+}
+
+.v-separator-m {
+  width: 20px;
+  display: inline-block;
+}
+
+.v-separator-xl {
+  width: 30px;
+  display: inline-block;
 }

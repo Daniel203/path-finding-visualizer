@@ -49,28 +49,7 @@ pub fn algorithm_selector_component(props: &Props) -> Html {
 
     html! {
         <div>
-            <select class={classes!("selector")}>
-            {
-                PFAlgorithms::iter()
-                    .map(|algorithm| {
-                        let onclick = {
-                            let selected_algorithm = selected_pf_algorithm.clone();
-                            move |_: MouseEvent | {
-                                selected_algorithm.set(algorithm)
-                            }
-                        };
-
-                        return html! {
-                            <option {onclick} selected={*selected_pf_algorithm == algorithm}>
-                                    {format!("{algorithm}")}
-                            </option>
-                        };
-                    })
-                .collect::<Html>()
-            }
-            </select>
-
-            <select class={classes!("selector")}>
+            <select class={classes!("btn")}>
             {
                 MGAlgorithms::iter()
                     .map(|algorithm| {
@@ -82,19 +61,52 @@ pub fn algorithm_selector_component(props: &Props) -> Html {
                         };
 
                         return html! {
-                            <option {onclick} selected={*selected_mg_algorithm == algorithm}>
-                                    {format!("{algorithm}")}
+                            <option
+                                {onclick}
+                                selected={*selected_mg_algorithm == algorithm}
+                                disabled={algorithm == MGAlgorithms::NotSelected}
+                            >
+                                {format!("{algorithm}")}
                             </option>
                         };
                     })
                 .collect::<Html>()
             }
             </select>
+            <button class={classes!("btn", "green")} onclick={on_generate_maze_click}>{"Generate Maze"}</button>
 
-            <button class={classes!("button")} onclick={on_generate_maze_click}>{"Generate maze"}</button>
-            <button class={classes!("button")} onclick={on_find_click}>{"Find path"}</button>
-            <button class={classes!("button")} onclick={on_reset_click}>{"Reset board"}</button>
-            <button class={classes!("button")} onclick={on_reset_visited_click}>{"Reset path"}</button>
+            <span class={classes!("v-separator-m")} />
+
+            <select class={classes!("btn")}>
+            {
+                PFAlgorithms::iter()
+                    .map(|algorithm| {
+                        let onclick = {
+                            let selected_algorithm = selected_pf_algorithm.clone();
+                            move |_: MouseEvent | {
+                                selected_algorithm.set(algorithm)
+                            }
+                        };
+
+                        return html! {
+                            <option
+                                {onclick}
+                                selected={*selected_pf_algorithm == algorithm}
+                                disabled={algorithm == PFAlgorithms::NotSelected}
+                            >
+                                {format!("{algorithm}")}
+                            </option>
+                        };
+                    })
+                .collect::<Html>()
+            }
+            </select>
+            <button class={classes!("btn", "green")} onclick={on_find_click}>{"Find path"}</button>
+
+            <span class={classes!("v-separator-m")} />
+
+            <button class={classes!("btn", "orange")} onclick={on_reset_visited_click}>{"Reset Visited Cells"}</button>
+            <button class={classes!("btn", "red")} onclick={on_reset_click}>{"Reset Board"}</button>
         </div>
     }
 }

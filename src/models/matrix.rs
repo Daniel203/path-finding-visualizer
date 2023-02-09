@@ -21,11 +21,17 @@ impl Matrix {
     }
 
     pub fn add_start(&mut self, coords: (isize, isize)) {
+        if self.matrix[coords.1 as usize][coords.0 as usize] == Cell::End {
+            self.end = None
+        }
         self.matrix[coords.1 as usize][coords.0 as usize] = Cell::Start;
         self.start = Some(coords);
     }
 
     pub fn add_end(&mut self, coords: (isize, isize)) {
+        if self.matrix[coords.1 as usize][coords.0 as usize] == Cell::Start {
+            self.start = None
+        }
         self.matrix[coords.1 as usize][coords.0 as usize] = Cell::End;
         self.end = Some(coords);
     }
@@ -68,6 +74,10 @@ impl Matrix {
                 self.set_cell((x, y), celltype.clone());
             }
         }
+
+        // reset the start and end because they have been overwritten
+        self.start = None;
+        self.end = None;
     }
 
     pub fn is_valid_coords(&self, coords: (isize, isize)) -> bool {
@@ -85,11 +95,11 @@ impl Matrix {
         return self.matrix[0].len();
     }
 
-    pub fn reset_visited_and_path(&mut self) {
+    pub fn replace_cells(&mut self, cell_to_replace: Vec<Cell>, replace_with: Cell) {
         for (y, line) in self.clone().matrix.iter().enumerate() {
             for (x, cell) in line.iter().enumerate() {
-                if cell == &Cell::Visited || cell == &Cell::Path {
-                    self.set_cell((x as isize, y as isize), Cell::UnVisited);
+                if cell_to_replace.contains(cell) {
+                    self.set_cell((x as isize, y as isize), replace_with.clone());
                 }
             }
         }

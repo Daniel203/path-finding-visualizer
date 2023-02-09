@@ -30,6 +30,7 @@ pub fn dfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
         if curr_coords != start {
             matrix.set_cell(curr_coords, Cell::Visited);
         }
+
         render_new_matrix_state(matrix_obj.clone(), matrix.clone());
 
         for neighbour in get_neighbours(&matrix, curr_coords) {

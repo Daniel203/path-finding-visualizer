@@ -15,7 +15,7 @@ pub enum MGAlgorithms {
 impl Display for MGAlgorithms {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            MGAlgorithms::NotSelected => write!(f, "Select an algorithm"),
+            MGAlgorithms::NotSelected => write!(f, "Maze-Generation Algorithm"),
             MGAlgorithms::BinaryTree => write!(f, "Binary Tree"),
             MGAlgorithms::Dfs => write!(f, "DFS"),
         }
