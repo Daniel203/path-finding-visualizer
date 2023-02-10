@@ -1,0 +1,14 @@
+.v-separator-sm {
+  width: 10px;
+  display: inline-block;
+}
+
+.v-separator-m {
+  width: 20px;
+  display: inline-block;
+}
+
+.v-separator-xl {
+  width: 30px;
+  display: inline-block;
+}

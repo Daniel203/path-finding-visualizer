@@ -9,6 +9,7 @@ edition = "2021"
 getrandom = { version = "0.2.8", features = ["js"] }
 gloo-console = "0.2.3"
 gloo-timers = "0.2.6"
+gloo-utils = "0.1.6"
 rand = "0.8.5"
 strum = "0.24.1"
 strum_macros = "0.24.3"

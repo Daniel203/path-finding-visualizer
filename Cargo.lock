@@ -414,6 +414,7 @@ dependencies = [
  "getrandom",
  "gloo-console",
  "gloo-timers",
+ "gloo-utils",
  "rand",
  "strum",
  "strum_macros",

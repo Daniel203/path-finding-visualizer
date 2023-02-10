@@ -2,10 +2,15 @@ use strum::IntoEnumIterator;
 use web_sys::MouseEvent;
 use yew::{classes, function_component, html, use_state, Callback, Html, Properties};
 
-use crate::algorithms::{maze_generation::MGAlgorithms, path_finding::PFAlgorithms};
+use crate::models::notification::Notification;
+use crate::models::notification::SeverityLevel;
+use crate::{
+    algorithms::{maze_generation::MGAlgorithms, path_finding::PFAlgorithms},
+    components::notification_component::NotificationComponent,
+};
 
 #[derive(Properties, PartialEq, Clone)]
-pub struct Props {
+pub struct AlgorithmSelectorProps {
     pub on_generate_maze_clicked: Callback<MGAlgorithms>,
     pub on_find_path_clicked: Callback<PFAlgorithms>,
     pub on_reset_board_clicked: Callback<()>,
@@ -13,23 +18,43 @@ pub struct Props {
 }
 
 #[function_component(AlgorithmSelectorComponent)]
-pub fn algorithm_selector_component(props: &Props) -> Html {
+pub fn algorithm_selector_component(props: &AlgorithmSelectorProps) -> Html {
     let selected_pf_algorithm = use_state(|| PFAlgorithms::NotSelected);
     let selected_mg_algorithm = use_state(|| MGAlgorithms::NotSelected);
 
+    let snackbar_value = use_state(Notification::default);
+
     let on_find_click = {
         let selected_algorithm = selected_pf_algorithm.clone();
+        let snackbar_value = snackbar_value.clone();
         let props = props.clone();
+
         move |_| {
-            props.on_find_path_clicked.emit(*selected_algorithm);
+            if *selected_algorithm != PFAlgorithms::NotSelected {
+                props.on_find_path_clicked.emit(*selected_algorithm);
+            } else {
+                snackbar_value.set(Notification::new(
+                    String::from("Please select a path finding algorithm"),
+                    SeverityLevel::Warning,
+                ));
+            }
         }
     };
 
     let on_generate_maze_click = {
         let selected_algorithm = selected_mg_algorithm.clone();
+        let snackbar_value = snackbar_value.clone();
         let props = props.clone();
+
         move |_| {
-            props.on_generate_maze_clicked.emit(*selected_algorithm);
+            if *selected_algorithm != MGAlgorithms::NotSelected {
+                props.on_generate_maze_clicked.emit(*selected_algorithm);
+            } else {
+                snackbar_value.set(Notification::new(
+                    String::from("Please select a maze generation algorithm"),
+                    SeverityLevel::Warning,
+                ));
+            }
         }
     };
 
@@ -107,6 +132,10 @@ pub fn algorithm_selector_component(props: &Props) -> Html {
 
             <button class={classes!("btn", "orange")} onclick={on_reset_visited_click}>{"Reset Visited Cells"}</button>
             <button class={classes!("btn", "red")} onclick={on_reset_click}>{"Reset Board"}</button>
+
+            if !snackbar_value.msg.is_empty() {
+                <NotificationComponent notification={(*snackbar_value).clone()} />
+            }
         </div>
     }
 }
