@@ -86,8 +86,8 @@ pub fn a_star_search(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
 }
 
 fn get_neighbours(matrix: &Matrix, coords: (isize, isize)) -> Vec<(isize, isize)> {
-    let width = matrix.clone().width() as isize;
-    let height = matrix.clone().height() as isize;
+    let width = matrix.clone().width;
+    let height = matrix.clone().height;
 
     let (x, y) = coords;
     let directions: Vec<(isize, isize)> = vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)];

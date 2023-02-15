@@ -50,6 +50,11 @@ pub fn matrix_component() -> Html {
             MGAlgorithms::Dfs => {
                 maze_generation::dfs::dfs(matrix_for_maze_generation.clone());
             }
+            MGAlgorithms::RecursiveDivision => {
+                maze_generation::recursive_division::recursive_division(
+                    matrix_for_maze_generation.clone(),
+                );
+            }
         });
 
     let matrix_for_reset_board = matrix_handle.clone();

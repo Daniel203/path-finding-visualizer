@@ -2,19 +2,19 @@ use super::cell::Cell;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Matrix {
-    pub x: isize,
-    pub y: isize,
+    pub width: isize,
+    pub height: isize,
     pub matrix: Vec<Vec<Cell>>,
     pub start: Option<(isize, isize)>,
     pub end: Option<(isize, isize)>,
 }
 
 impl Matrix {
-    pub fn new(x: isize, y: isize) -> Self {
+    pub fn new(width: isize, height: isize) -> Self {
         Self {
-            x,
-            y,
-            matrix: vec![vec![Cell::UnVisited; x as usize]; y as usize],
+            width,
+            height,
+            matrix: vec![vec![Cell::UnVisited; width as usize]; height as usize],
             start: None,
             end: None,
         }
@@ -69,8 +69,8 @@ impl Matrix {
     }
 
     pub fn set_all_cells(&mut self, celltype: Cell) {
-        for y in 0..self.height() as isize {
-            for x in 0..self.width() as isize {
+        for y in 0..self.height {
+            for x in 0..self.width {
                 self.set_cell((x, y), celltype.clone());
             }
         }
@@ -81,18 +81,7 @@ impl Matrix {
     }
 
     pub fn is_valid_coords(&self, coords: (isize, isize)) -> bool {
-        return coords.0 >= 0
-            && coords.1 >= 0
-            && coords.0 < self.width() as isize
-            && coords.1 < self.height() as isize;
-    }
-
-    pub fn height(&self) -> usize {
-        return self.matrix.len();
-    }
-
-    pub fn width(&self) -> usize {
-        return self.matrix[0].len();
+        return coords.0 >= 0 && coords.1 >= 0 && coords.0 < self.width && coords.1 < self.height;
     }
 
     pub fn replace_cells(&mut self, cell_to_replace: Vec<Cell>, replace_with: Cell) {

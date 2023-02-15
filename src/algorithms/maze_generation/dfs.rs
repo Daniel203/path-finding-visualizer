@@ -51,8 +51,8 @@ fn get_random_cell(matrix: &mut Matrix) -> (isize, isize) {
     let mut rng = rand::thread_rng();
 
     while !matrix.is_valid_coords(coords) || matrix.get_cell(coords) != Some(Cell::Wall) {
-        let x = rng.gen_range(0..matrix.width() as isize);
-        let y = rng.gen_range(0..matrix.height() as isize);
+        let x = rng.gen_range(0..matrix.width);
+        let y = rng.gen_range(0..matrix.height);
         coords = (x, y)
     }
 
@@ -60,8 +60,8 @@ fn get_random_cell(matrix: &mut Matrix) -> (isize, isize) {
 }
 
 fn get_neighbours(matrix: &Matrix, coords: (isize, isize)) -> Vec<(isize, isize)> {
-    let width = matrix.clone().width() as isize;
-    let height = matrix.clone().height() as isize;
+    let width = matrix.clone().width;
+    let height = matrix.clone().height;
 
     let (x, y) = coords;
     let directions: Vec<(isize, isize)> = vec![(x - 2, y), (x + 2, y), (x, y + 2), (x, y - 2)];

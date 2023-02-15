@@ -9,10 +9,10 @@ pub fn binary_tree(matrix_obj: UseStateHandle<Matrix>) {
     matrix.set_all_cells(Cell::Wall);
 
     let mut y: isize = 0;
-    while y < matrix.height() as isize {
+    while y < matrix.height {
         let mut x: isize = 0;
 
-        while x < matrix.width() as isize {
+        while x < matrix.width {
             matrix.set_cell((x, y), Cell::UnVisited);
             let mut neighbours: Vec<(isize, isize)> = Vec::new();
 

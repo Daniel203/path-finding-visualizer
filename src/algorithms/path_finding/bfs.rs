@@ -13,9 +13,9 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
     let mut queue = VecDeque::from([(0, start)]);
 
     let mut visited: Vec<Vec<Option<(isize, isize)>>> = Vec::new();
-    let height = matrix.clone().height();
-    let width = matrix.clone().width();
-    initialize_visited(height, width, &mut visited);
+    let height = matrix.clone().height;
+    let width = matrix.clone().width;
+    initialize_visited(height as usize, width as usize, &mut visited);
 
     while !queue.is_empty() {
         let (distance, coords) = queue.pop_front().unwrap();
@@ -43,8 +43,8 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
 }
 
 fn get_neighbours(matrix: &Matrix, coords: (isize, isize)) -> Vec<(isize, isize)> {
-    let width = matrix.clone().width() as isize;
-    let height = matrix.clone().height() as isize;
+    let width = matrix.clone().width;
+    let height = matrix.clone().height;
 
     let (x, y) = coords;
     let directions: Vec<(isize, isize)> = vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)];
