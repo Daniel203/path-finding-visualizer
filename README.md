@@ -40,6 +40,7 @@ Path finding algorithms:
 Maze generation algorithms: 
 - [x] Binary tree
 - [x] DFS
+- [x] Recursive division
 
 
 ### TODO
