@@ -1,0 +1,28 @@
+:root {
+    --background_color: #212322;
+    --cell_size: 15px;
+
+    --yellow: #eab308;
+    --red: #dc2626;
+    --dark_red: #b91c1c;
+    --orange: #ea580c;
+    --dark_orange: #c2410c;
+    --green: #16a34a;
+    --dark_green: #15803d;
+    --blue: #6699CC;
+    --light_blue: #60a5fa;
+    --dark_blue: #1d4ed8;
+    --gray: #6b7280;
+    --light_gray: #9ca3af;
+    --dark_gray: #374151;
+}
+
+
+body {
+    background: var(--background_color);
+}
+
+table {
+    border-collapse: collapse;
+    margin-top: 30px;
+}
