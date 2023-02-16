@@ -14,7 +14,7 @@ pub struct AlgorithmSelectorProps {
     pub on_generate_maze_clicked: Callback<MGAlgorithms>,
     pub on_find_path_clicked: Callback<PFAlgorithms>,
     pub on_reset_board_clicked: Callback<()>,
-    pub on_reset_board_visited_clicked: Callback<()>,
+    pub on_reset_visited_clicked: Callback<()>,
 }
 
 #[function_component(AlgorithmSelectorComponent)]
@@ -68,7 +68,7 @@ pub fn algorithm_selector_component(props: &AlgorithmSelectorProps) -> Html {
     let on_reset_visited_click = {
         let props = props.clone();
         move |_| {
-            props.on_reset_board_visited_clicked.emit(());
+            props.on_reset_visited_clicked.emit(());
         }
     };
 

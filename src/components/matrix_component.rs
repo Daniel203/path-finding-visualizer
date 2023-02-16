@@ -1,83 +1,87 @@
 use web_sys::MouseEvent;
-use yew::{classes, function_component, html, use_state, Callback, Html, UseStateHandle};
+use yew::{
+    classes, function_component, html, use_state, Callback, Html, Properties, UseStateHandle,
+};
 
+use crate::algorithms::{maze_generation, path_finding};
+use crate::algorithms::{maze_generation::MGAlgorithms, path_finding::PFAlgorithms};
 use crate::{
-    algorithms::{
-        maze_generation,
-        maze_generation::MGAlgorithms,
-        path_finding,
-        path_finding::{a_star::a_star, a_star_search::a_star_search, bfs::bfs, PFAlgorithms},
-    },
-    components::algorithm_selector_component::AlgorithmSelectorComponent,
     constraints::{BOARD_HEIGHT, BOARD_WIDTH},
     models::{cell::Cell, matrix::Matrix},
 };
 
+#[derive(Properties, PartialEq, Clone)]
+pub struct MatrixProps {
+    pub selected_mg_algorithm: Option<MGAlgorithms>,
+    pub selected_pf_algorithm: Option<PFAlgorithms>,
+    pub reset_board: bool,
+    pub reset_visited: bool,
+    pub completed_path_finding: Callback<()>,
+    pub completed_maze_generation: Callback<()>,
+    pub completed_reset_board: Callback<()>,
+    pub completed_reset_visited: Callback<()>,
+}
+
 #[function_component(MatrixComponent)]
-pub fn matrix_component() -> Html {
+pub fn matrix_component(props: &MatrixProps) -> Html {
     let matrix_handle = use_state(|| Matrix::new(BOARD_WIDTH, BOARD_HEIGHT));
     let mouse_down = use_state(|| false);
 
-    let matrix_for_find_path = matrix_handle.clone();
-    let on_find_path_clicked: Callback<PFAlgorithms> =
-        Callback::from(move |algorithm: PFAlgorithms| {
-            if matrix_for_find_path.start.is_some() && matrix_for_find_path.end.is_some() {
-                match algorithm {
-                    PFAlgorithms::NotSelected => (),
-                    PFAlgorithms::Bfs => {
-                        bfs(matrix_for_find_path.clone());
-                    }
-                    PFAlgorithms::Dfs => {
-                        path_finding::dfs::dfs(matrix_for_find_path.clone());
-                    }
-                    PFAlgorithms::AStar => {
-                        a_star(matrix_for_find_path.clone());
-                    }
-                    PFAlgorithms::AStarSearch => {
-                        a_star_search(matrix_for_find_path.clone());
-                    }
-                }
-            }
-        });
+    let props = props.clone();
 
-    let matrix_for_maze_generation = matrix_handle.clone();
-    let on_generate_maze_clicked: Callback<MGAlgorithms> =
-        Callback::from(move |algorithm: MGAlgorithms| match algorithm {
-            MGAlgorithms::NotSelected => (),
+    if let Some(algorithm) = props.selected_mg_algorithm {
+        match algorithm {
+            MGAlgorithms::NotSelected => {}
             MGAlgorithms::BinaryTree => {
-                maze_generation::binary_tree::binary_tree(matrix_for_maze_generation.clone());
+                maze_generation::binary_tree::binary_tree(matrix_handle.clone());
             }
             MGAlgorithms::Dfs => {
-                maze_generation::dfs::dfs(matrix_for_maze_generation.clone());
+                maze_generation::dfs::dfs(matrix_handle.clone());
             }
             MGAlgorithms::RecursiveDivision => {
-                maze_generation::recursive_division::recursive_division(
-                    matrix_for_maze_generation.clone(),
-                );
+                maze_generation::recursive_division::recursive_division(matrix_handle.clone());
             }
-        });
+        };
 
-    let matrix_for_reset_board = matrix_handle.clone();
-    let on_reset_board_clicked: Callback<()> = Callback::from(move |_| {
-        let new_matrix = Matrix::new(BOARD_WIDTH, BOARD_HEIGHT);
-        matrix_for_reset_board.set(new_matrix);
-    });
+        props.completed_maze_generation.emit(());
+    }
 
-    let matrix_for_reset_board_visited = matrix_handle.clone();
-    let on_reset_board_visited_clicked: Callback<()> = Callback::from(move |_| {
-        let mut new_matrix = (*matrix_for_reset_board_visited).clone();
-        new_matrix.replace_cells(vec![Cell::Path, Cell::Visited], Cell::UnVisited);
-        matrix_for_reset_board_visited.set(new_matrix);
-    });
+    if let Some(algorithm) = props.selected_pf_algorithm {
+        match algorithm {
+            PFAlgorithms::NotSelected => {}
+            PFAlgorithms::Bfs => {
+                path_finding::bfs::bfs(matrix_handle.clone());
+            }
+            PFAlgorithms::Dfs => {
+                path_finding::dfs::dfs(matrix_handle.clone());
+            }
+            PFAlgorithms::AStar => {
+                path_finding::a_star::a_star(matrix_handle.clone());
+            }
+            PFAlgorithms::AStarSearch => {
+                path_finding::a_star_search::a_star_search(matrix_handle.clone());
+            }
+        };
+
+        props.completed_path_finding.emit(());
+    }
+
+    if props.reset_board {
+        let mut matrix = (*matrix_handle).clone();
+        matrix.set_all_cells(Cell::UnVisited);
+        matrix_handle.set(matrix);
+        props.completed_reset_board.emit(());
+    }
+
+    if props.reset_visited {
+        let mut matrix = (*matrix_handle).clone();
+        matrix.replace_cells(vec![Cell::Visited, Cell::Path], Cell::UnVisited);
+        matrix_handle.set(matrix);
+        props.completed_reset_visited.emit(());
+    }
 
     html! {
         <div>
-            <AlgorithmSelectorComponent
-                {on_find_path_clicked}
-                {on_generate_maze_clicked}
-                {on_reset_board_clicked}
-                {on_reset_board_visited_clicked}
-            />
             <table>
             {
                 matrix_handle.matrix
