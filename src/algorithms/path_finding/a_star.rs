@@ -1,4 +1,3 @@
-use gloo_timers::callback::Timeout;
 use std::{
     cmp::Ordering,
     collections::{BinaryHeap, HashMap},
@@ -7,7 +6,7 @@ use std::{
 use yew::UseStateHandle;
 
 use crate::models::cell::Cell;
-use crate::models::matrix::Matrix;
+use crate::{components::matrix_component::draw_matrix, models::matrix::Matrix};
 
 #[derive(Debug, Clone, Copy)]
 struct Node {
@@ -76,7 +75,7 @@ pub fn a_star(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
 
                 if neighbour != start && neighbour != end {
                     matrix.set_cell(neighbour, Cell::Visited);
-                    render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+                    draw_matrix(matrix_obj.clone(), matrix.clone());
                 }
             }
         }
@@ -113,13 +112,6 @@ fn manhattan_distance(start: (isize, isize), end: (isize, isize)) -> f64 {
     return (isize::abs_diff(start.0, end.0) + isize::abs_diff(start.1, end.1)) as f64;
 }
 
-fn render_new_matrix_state(matrix_obj: UseStateHandle<Matrix>, matrix: Matrix) {
-    Timeout::new(0, move || {
-        matrix_obj.set(matrix.clone());
-    })
-    .forget();
-}
-
 fn write_shortest_path(
     came_from: HashMap<(isize, isize), Option<(isize, isize)>>,
     start: (isize, isize),
@@ -137,6 +129,6 @@ fn write_shortest_path(
 
     for coords in path.iter().rev() {
         matrix.set_cell(*coords, Cell::Path);
-        render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_obj.clone(), matrix.clone());
     }
 }

@@ -1,8 +1,10 @@
-use gloo_timers::callback::Timeout;
 use rand::{seq::SliceRandom, thread_rng};
 use yew::UseStateHandle;
 
-use crate::models::{cell::Cell, matrix::Matrix};
+use crate::{
+    components::matrix_component::draw_matrix,
+    models::{cell::Cell, matrix::Matrix},
+};
 
 pub fn binary_tree(matrix_obj: UseStateHandle<Matrix>) {
     let mut matrix = (*matrix_obj).clone();
@@ -34,7 +36,7 @@ pub fn binary_tree(matrix_obj: UseStateHandle<Matrix>) {
                 connect_cells(neighbour, &mut matrix, x, y);
             }
 
-            render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+            draw_matrix(matrix_obj.clone(), matrix.clone());
 
             x += 2;
         }
@@ -42,7 +44,7 @@ pub fn binary_tree(matrix_obj: UseStateHandle<Matrix>) {
         y += 2;
     }
 
-    render_new_matrix_state(matrix_obj, matrix);
+    draw_matrix(matrix_obj, matrix);
 }
 
 fn get_neighbour_in_direction(
@@ -83,11 +85,4 @@ fn connect_cells(neighbour: (isize, isize), matrix: &mut Matrix, x: isize, y: is
     if matrix.get_cell(connection) == Some(Cell::Wall) {
         matrix.set_cell(connection, Cell::UnVisited);
     }
-}
-
-fn render_new_matrix_state(matrix_obj: UseStateHandle<Matrix>, matrix: Matrix) {
-    Timeout::new(0, move || {
-        matrix_obj.set(matrix.clone());
-    })
-    .forget();
 }

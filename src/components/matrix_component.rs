@@ -1,3 +1,4 @@
+use gloo_timers::callback::Timeout;
 use web_sys::MouseEvent;
 use yew::{
     classes, function_component, html, use_state, Callback, Html, Properties, UseStateHandle,
@@ -16,10 +17,10 @@ pub struct MatrixProps {
     pub selected_pf_algorithm: Option<PFAlgorithms>,
     pub reset_board: bool,
     pub reset_visited: bool,
-    pub completed_path_finding: Callback<()>,
-    pub completed_maze_generation: Callback<()>,
-    pub completed_reset_board: Callback<()>,
-    pub completed_reset_visited: Callback<()>,
+    pub set_pf_algorithm: Callback<Option<PFAlgorithms>>,
+    pub set_mg_algorithm: Callback<Option<MGAlgorithms>>,
+    pub set_reset_board: Callback<bool>,
+    pub set_reset_visited: Callback<bool>,
 }
 
 #[function_component(MatrixComponent)]
@@ -43,7 +44,7 @@ pub fn matrix_component(props: &MatrixProps) -> Html {
             }
         };
 
-        props.completed_maze_generation.emit(());
+        props.set_mg_algorithm.emit(None);
     }
 
     if let Some(algorithm) = props.selected_pf_algorithm {
@@ -63,21 +64,21 @@ pub fn matrix_component(props: &MatrixProps) -> Html {
             }
         };
 
-        props.completed_path_finding.emit(());
+        props.set_pf_algorithm.emit(None);
     }
 
     if props.reset_board {
         let mut matrix = (*matrix_handle).clone();
         matrix.set_all_cells(Cell::UnVisited);
         matrix_handle.set(matrix);
-        props.completed_reset_board.emit(());
+        props.set_reset_board.emit(false);
     }
 
     if props.reset_visited {
         let mut matrix = (*matrix_handle).clone();
         matrix.replace_cells(vec![Cell::Visited, Cell::Path], Cell::UnVisited);
         matrix_handle.set(matrix);
-        props.completed_reset_visited.emit(());
+        props.set_reset_visited.emit(false);
     }
 
     html! {
@@ -186,4 +187,11 @@ fn handle_cell_clicked(matrix_handle: &UseStateHandle<Matrix>, x: usize, y: usiz
     }
 
     return new_matrix;
+}
+
+pub fn draw_matrix(matrix_obj: UseStateHandle<Matrix>, matrix: Matrix) {
+    Timeout::new(0, move || {
+        matrix_obj.set(matrix.clone());
+    })
+    .forget();
 }

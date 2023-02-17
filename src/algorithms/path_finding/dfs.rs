@@ -1,9 +1,11 @@
-use gloo_timers::callback::Timeout;
 use std::collections::VecDeque;
 
 use yew::UseStateHandle;
 
-use crate::models::{cell::Cell, matrix::Matrix};
+use crate::{
+    components::matrix_component::draw_matrix,
+    models::{cell::Cell, matrix::Matrix},
+};
 
 pub fn dfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
     let mut matrix = (*matrix_obj).clone();
@@ -31,7 +33,7 @@ pub fn dfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
             matrix.set_cell(curr_coords, Cell::Visited);
         }
 
-        render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_obj.clone(), matrix.clone());
 
         for neighbour in get_neighbours(&matrix, curr_coords) {
             if visited[neighbour.1 as usize][neighbour.0 as usize].is_none() {
@@ -67,13 +69,6 @@ fn get_neighbours(matrix: &Matrix, coords: (isize, isize)) -> Vec<(isize, isize)
     return neighbours;
 }
 
-fn render_new_matrix_state(matrix_obj: UseStateHandle<Matrix>, matrix: Matrix) {
-    Timeout::new(0, move || {
-        matrix_obj.set(matrix.clone());
-    })
-    .forget();
-}
-
 fn write_shortest_path(
     start: (isize, isize),
     end: (isize, isize),
@@ -85,7 +80,7 @@ fn write_shortest_path(
 
     while (next_x, next_y) != end {
         matrix.set_cell((next_x, next_y), Cell::Path);
-        render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_obj.clone(), matrix.clone());
 
         let (nx, ny) = visited[next_y as usize][next_x as usize].unwrap();
 

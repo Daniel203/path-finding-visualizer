@@ -16,6 +16,12 @@ pub enum PFAlgorithms {
     AStarSearch,
 }
 
+impl Default for PFAlgorithms {
+    fn default() -> Self {
+        return Self::NotSelected;
+    }
+}
+
 impl Display for PFAlgorithms {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {

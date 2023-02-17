@@ -14,6 +14,12 @@ pub enum MGAlgorithms {
     RecursiveDivision,
 }
 
+impl Default for MGAlgorithms {
+    fn default() -> Self {
+        return Self::NotSelected;
+    }
+}
+
 impl Display for MGAlgorithms {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {

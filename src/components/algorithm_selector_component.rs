@@ -11,10 +11,10 @@ use crate::{
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct AlgorithmSelectorProps {
-    pub on_generate_maze_clicked: Callback<MGAlgorithms>,
-    pub on_find_path_clicked: Callback<PFAlgorithms>,
-    pub on_reset_board_clicked: Callback<()>,
-    pub on_reset_visited_clicked: Callback<()>,
+    pub set_pf_algorithm: Callback<Option<PFAlgorithms>>,
+    pub set_mg_algorithm: Callback<Option<MGAlgorithms>>,
+    pub set_reset_board: Callback<bool>,
+    pub set_reset_visited: Callback<bool>,
 }
 
 #[function_component(AlgorithmSelectorComponent)]
@@ -31,7 +31,7 @@ pub fn algorithm_selector_component(props: &AlgorithmSelectorProps) -> Html {
 
         move |_| {
             if *selected_algorithm != PFAlgorithms::NotSelected {
-                props.on_find_path_clicked.emit(*selected_algorithm);
+                props.set_pf_algorithm.emit(Some(*selected_algorithm));
             } else {
                 snackbar_value.set(Notification::new(
                     String::from("Please select a path finding algorithm"),
@@ -48,7 +48,7 @@ pub fn algorithm_selector_component(props: &AlgorithmSelectorProps) -> Html {
 
         move |_| {
             if *selected_algorithm != MGAlgorithms::NotSelected {
-                props.on_generate_maze_clicked.emit(*selected_algorithm);
+                props.set_mg_algorithm.emit(Some(*selected_algorithm));
             } else {
                 snackbar_value.set(Notification::new(
                     String::from("Please select a maze generation algorithm"),
@@ -61,14 +61,14 @@ pub fn algorithm_selector_component(props: &AlgorithmSelectorProps) -> Html {
     let on_reset_click = {
         let props = props.clone();
         move |_| {
-            props.on_reset_board_clicked.emit(());
+            props.set_reset_board.emit(true);
         }
     };
 
     let on_reset_visited_click = {
         let props = props.clone();
         move |_| {
-            props.on_reset_visited_clicked.emit(());
+            props.set_reset_visited.emit(true);
         }
     };
 

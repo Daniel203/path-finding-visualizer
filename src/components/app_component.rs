@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use yew::{function_component, html, use_state, Callback, Html};
 
 use crate::algorithms::maze_generation::MGAlgorithms;
@@ -5,73 +7,70 @@ use crate::algorithms::path_finding::PFAlgorithms;
 use crate::components::algorithm_selector_component::AlgorithmSelectorComponent;
 use crate::components::matrix_component::MatrixComponent;
 
+#[derive(Default, Clone)]
+struct State {
+    selected_pf_algorithm: Option<PFAlgorithms>,
+    selected_mg_algorithm: Option<MGAlgorithms>,
+    reset_board: bool,
+    reset_visited: bool,
+}
+
 #[function_component(App)]
 pub fn app() -> Html {
-    let selected_pf_algorithm = use_state(|| None);
-    let selected_mg_algorithm = use_state(|| None);
-    let reset_board = use_state(|| false);
-    let reset_visited = use_state(|| false);
+    let state = use_state(State::default);
 
-    let selected_pf_algorithm_clone = selected_pf_algorithm.clone();
-    let on_find_path_clicked: Callback<PFAlgorithms> =
-        Callback::from(move |algorithm: PFAlgorithms| {
-            selected_pf_algorithm_clone.set(Some(algorithm));
+    let state_clone = state.clone();
+    let set_pf_algorithm: Callback<Option<PFAlgorithms>> =
+        Callback::from(move |algorithm: Option<PFAlgorithms>| {
+            state_clone.set(State {
+                selected_pf_algorithm: algorithm,
+                ..state_clone.deref().clone()
+            });
         });
 
-    let selected_mg_algorithm_clone = selected_mg_algorithm.clone();
-    let on_generate_maze_clicked: Callback<MGAlgorithms> =
-        Callback::from(move |algorithm: MGAlgorithms| {
-            selected_mg_algorithm_clone.set(Some(algorithm));
+    let state_clone = state.clone();
+    let set_mg_algorithm: Callback<Option<MGAlgorithms>> =
+        Callback::from(move |algorithm: Option<MGAlgorithms>| {
+            state_clone.set(State {
+                selected_mg_algorithm: algorithm,
+                ..state_clone.deref().clone()
+            });
         });
 
-    let selected_mg_algorithm_clone = selected_mg_algorithm.clone();
-    let completed_maze_generation: Callback<()> = Callback::from(move |_| {
-        selected_mg_algorithm_clone.set(None);
+    let state_clone = state.clone();
+    let set_reset_board: Callback<bool> = Callback::from(move |reset_board: bool| {
+        state_clone.set(State {
+            reset_board,
+            ..state_clone.deref().clone()
+        });
     });
 
-    let selected_pf_algorithm_clone = selected_pf_algorithm.clone();
-    let completed_path_finding: Callback<()> = Callback::from(move |_| {
-        selected_pf_algorithm_clone.set(None);
-    });
-
-    let reset_board_clone = reset_board.clone();
-    let on_reset_board_clicked: Callback<()> = Callback::from(move |_| {
-        reset_board_clone.set(true);
-    });
-
-    let reset_board_clone = reset_board.clone();
-    let completed_reset_board: Callback<()> = Callback::from(move |_| {
-        reset_board_clone.set(false);
-    });
-
-    let reset_visited_clone = reset_visited.clone();
-    let on_reset_visited_clicked: Callback<()> = Callback::from(move |_| {
-        reset_visited_clone.set(true);
-    });
-
-    let reset_visited_clone = reset_visited.clone();
-    let completed_reset_visited: Callback<()> = Callback::from(move |_| {
-        reset_visited_clone.set(false);
+    let state_clone = state.clone();
+    let set_reset_visited: Callback<bool> = Callback::from(move |reset_visited: bool| {
+        state_clone.set(State {
+            reset_visited,
+            ..state_clone.deref().clone()
+        });
     });
 
     html! {
         <div>
             <AlgorithmSelectorComponent
-                {on_find_path_clicked}
-                {on_generate_maze_clicked}
-                {on_reset_board_clicked}
-                {on_reset_visited_clicked}
+                set_pf_algorithm = { set_pf_algorithm.clone() }
+                set_mg_algorithm =  { set_mg_algorithm.clone() }
+                set_reset_board =  { set_reset_board.clone() }
+                set_reset_visited =  { set_reset_visited.clone() }
              />
 
             <MatrixComponent
-                selected_mg_algorithm = { *selected_mg_algorithm }
-                selected_pf_algorithm = { *selected_pf_algorithm }
-                reset_board = { *reset_board }
-                reset_visited = { *reset_visited }
-                completed_maze_generation = { completed_maze_generation }
-                completed_path_finding = { completed_path_finding }
-                completed_reset_board = { completed_reset_board }
-                completed_reset_visited = { completed_reset_visited }
+                selected_mg_algorithm = { state.selected_mg_algorithm }
+                selected_pf_algorithm = { state.selected_pf_algorithm }
+                reset_board = { state.reset_board }
+                reset_visited = { state.reset_visited }
+                set_pf_algorithm = { set_pf_algorithm }
+                set_mg_algorithm = { set_mg_algorithm }
+                set_reset_board = { set_reset_board }
+                set_reset_visited = { set_reset_visited }
             />
         </div>
     }

@@ -1,8 +1,10 @@
-use gloo_timers::callback::Timeout;
 use rand::seq::SliceRandom;
 use yew::UseStateHandle;
 
-use crate::models::{cell::Cell, matrix::Matrix};
+use crate::{
+    components::matrix_component::draw_matrix,
+    models::{cell::Cell, matrix::Matrix},
+};
 
 #[derive(Debug, Clone, Copy)]
 enum Orientation {
@@ -29,7 +31,7 @@ pub fn recursive_division(matrix_obj: UseStateHandle<Matrix>) {
         Orientation::Horizontal,
     );
 
-    render_new_matrix_state(matrix_obj, matrix);
+    draw_matrix(matrix_obj, matrix);
 }
 
 fn draw_surrounding_walls(matrix_obj: UseStateHandle<Matrix>, matrix: &mut Matrix) {
@@ -40,14 +42,14 @@ fn draw_surrounding_walls(matrix_obj: UseStateHandle<Matrix>, matrix: &mut Matri
     for y in 0..height {
         matrix.set_cell((0, y), Cell::Wall);
         matrix.set_cell((width - 1, y), Cell::Wall);
-        render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_obj.clone(), matrix.clone());
     }
 
     // horizontal walls
     for x in 0..width {
         matrix.set_cell((x, 0), Cell::Wall);
         matrix.set_cell((x, height - 1), Cell::Wall);
-        render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_obj.clone(), matrix.clone());
     }
 }
 
@@ -85,7 +87,7 @@ fn divide(
             }
 
             matrix.set_cell((curr_col, curr_row), Cell::UnVisited);
-            render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+            draw_matrix(matrix_obj.clone(), matrix.clone());
 
             if curr_col - min_x - 2 < max_y - min_y {
                 divide(
@@ -149,7 +151,7 @@ fn divide(
             }
 
             matrix.set_cell((curr_col, curr_row), Cell::UnVisited);
-            render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+            draw_matrix(matrix_obj.clone(), matrix.clone());
 
             if curr_row - min_y - 2 > max_x - max_y {
                 divide(
@@ -196,11 +198,4 @@ fn divide(
             }
         }
     }
-}
-
-fn render_new_matrix_state(matrix_obj: UseStateHandle<Matrix>, matrix: Matrix) {
-    Timeout::new(0, move || {
-        matrix_obj.set(matrix.clone());
-    })
-    .forget();
 }

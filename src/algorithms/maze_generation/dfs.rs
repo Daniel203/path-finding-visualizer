@@ -1,10 +1,12 @@
 use std::collections::VecDeque;
 
-use gloo_timers::callback::Timeout;
 use rand::{seq::SliceRandom, thread_rng, Rng};
 use yew::UseStateHandle;
 
-use crate::models::{cell::Cell, matrix::Matrix};
+use crate::{
+    components::matrix_component::draw_matrix,
+    models::{cell::Cell, matrix::Matrix},
+};
 
 pub fn dfs(matrix_obj: UseStateHandle<Matrix>) {
     let mut matrix = (*matrix_obj).clone();
@@ -39,11 +41,11 @@ pub fn dfs(matrix_obj: UseStateHandle<Matrix>) {
                 queue.push_back(*neighbour);
             }
 
-            render_new_matrix_state(matrix_obj.clone(), matrix.clone());
+            draw_matrix(matrix_obj.clone(), matrix.clone());
         }
     }
 
-    render_new_matrix_state(matrix_obj, matrix);
+    draw_matrix(matrix_obj, matrix);
 }
 
 fn get_random_cell(matrix: &mut Matrix) -> (isize, isize) {
@@ -83,11 +85,4 @@ fn get_neighbours(matrix: &Matrix, coords: (isize, isize)) -> Vec<(isize, isize)
     }
 
     return neighbours;
-}
-
-fn render_new_matrix_state(matrix_obj: UseStateHandle<Matrix>, matrix: Matrix) {
-    Timeout::new(0, move || {
-        matrix_obj.set(matrix.clone());
-    })
-    .forget();
 }
