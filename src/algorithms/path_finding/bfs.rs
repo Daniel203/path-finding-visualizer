@@ -1,14 +1,14 @@
 use std::collections::VecDeque;
 
-use yew::UseStateHandle;
+use yewdux::prelude::Dispatch;
 
 use crate::{
-    components::matrix_component::draw_matrix,
+    components::{matrix_component::draw_matrix, store::matrix_state::MatrixState},
     models::{cell::Cell, matrix::Matrix},
 };
 
-pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
-    let mut matrix = (*matrix_obj).clone();
+pub fn bfs(matrix_dispatch: &Dispatch<MatrixState>) -> Option<i32> {
+    let mut matrix = matrix_dispatch.get().matrix.clone();
     let start = matrix.start.unwrap();
     let end = matrix.end.unwrap();
 
@@ -23,7 +23,7 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
         let (distance, coords) = queue.pop_front().unwrap();
 
         if coords == end {
-            write_shortest_path(coords, start, &visited, &mut matrix, &matrix_obj);
+            write_shortest_path(coords, start, &visited, &mut matrix, matrix_dispatch);
             return Some(distance);
         }
 
@@ -38,7 +38,7 @@ pub fn bfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
             }
         }
 
-        draw_matrix(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_dispatch.clone(), matrix.clone());
     }
 
     return None;
@@ -73,7 +73,7 @@ fn write_shortest_path(
     start: (isize, isize),
     visited: &[Vec<Option<(isize, isize)>>],
     matrix: &mut Matrix,
-    matrix_obj: &UseStateHandle<Matrix>,
+    matrix_dispatch: &Dispatch<MatrixState>,
 ) {
     let (mut prev_x, mut prev_y) = coords;
     let mut path: Vec<(isize, isize)> = Vec::new();
@@ -93,7 +93,7 @@ fn write_shortest_path(
     // draw the path
     path.iter().rev().for_each(|(x, y)| {
         matrix.set_cell((*x, *y), Cell::Path);
-        draw_matrix(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_dispatch.clone(), matrix.clone());
     });
 }
 

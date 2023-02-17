@@ -1,13 +1,13 @@
 use rand::{seq::SliceRandom, thread_rng};
-use yew::UseStateHandle;
+use yewdux::prelude::Dispatch;
 
 use crate::{
-    components::matrix_component::draw_matrix,
+    components::{matrix_component::draw_matrix, store::matrix_state::MatrixState},
     models::{cell::Cell, matrix::Matrix},
 };
 
-pub fn binary_tree(matrix_obj: UseStateHandle<Matrix>) {
-    let mut matrix = (*matrix_obj).clone();
+pub fn binary_tree(matrix_dispatch: &Dispatch<MatrixState>) {
+    let mut matrix = matrix_dispatch.get().matrix.clone();
     matrix.set_all_cells(Cell::Wall);
 
     let mut y: isize = 0;
@@ -36,7 +36,7 @@ pub fn binary_tree(matrix_obj: UseStateHandle<Matrix>) {
                 connect_cells(neighbour, &mut matrix, x, y);
             }
 
-            draw_matrix(matrix_obj.clone(), matrix.clone());
+            draw_matrix(matrix_dispatch.clone(), matrix.clone());
 
             x += 2;
         }
@@ -44,7 +44,7 @@ pub fn binary_tree(matrix_obj: UseStateHandle<Matrix>) {
         y += 2;
     }
 
-    draw_matrix(matrix_obj, matrix);
+    draw_matrix(matrix_dispatch.clone(), matrix);
 }
 
 fn get_neighbour_in_direction(

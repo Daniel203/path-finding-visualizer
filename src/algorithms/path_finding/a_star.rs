@@ -3,10 +3,10 @@ use std::{
     collections::{BinaryHeap, HashMap},
 };
 
-use yew::UseStateHandle;
+use yewdux::prelude::Dispatch;
 
-use crate::models::cell::Cell;
 use crate::{components::matrix_component::draw_matrix, models::matrix::Matrix};
+use crate::{components::store::matrix_state::MatrixState, models::cell::Cell};
 
 #[derive(Debug, Clone, Copy)]
 struct Node {
@@ -34,8 +34,8 @@ impl Ord for Node {
     }
 }
 
-pub fn a_star(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
-    let mut matrix = (*matrix_obj).clone();
+pub fn a_star(matrix_dispatch: &Dispatch<MatrixState>) -> Option<i32> {
+    let mut matrix = matrix_dispatch.get().matrix.clone();
     let start = matrix.start.unwrap();
     let end = matrix.end.unwrap();
 
@@ -56,7 +56,7 @@ pub fn a_star(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
         let coords = curr.coords;
 
         if coords == end {
-            write_shortest_path(came_from, start, end, &mut matrix, &matrix_obj);
+            write_shortest_path(came_from, start, end, &mut matrix, matrix_dispatch);
             return Some(curr.cost as i32);
         }
 
@@ -75,7 +75,7 @@ pub fn a_star(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
 
                 if neighbour != start && neighbour != end {
                     matrix.set_cell(neighbour, Cell::Visited);
-                    draw_matrix(matrix_obj.clone(), matrix.clone());
+                    draw_matrix(matrix_dispatch.clone(), matrix.clone());
                 }
             }
         }
@@ -117,7 +117,7 @@ fn write_shortest_path(
     start: (isize, isize),
     end: (isize, isize),
     matrix: &mut Matrix,
-    matrix_obj: &UseStateHandle<Matrix>,
+    matrix_dispatch: &Dispatch<MatrixState>,
 ) {
     let mut curr = (*came_from.get(&end).unwrap()).unwrap();
     let mut path = Vec::new();
@@ -129,6 +129,6 @@ fn write_shortest_path(
 
     for coords in path.iter().rev() {
         matrix.set_cell(*coords, Cell::Path);
-        draw_matrix(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_dispatch.clone(), matrix.clone());
     }
 }

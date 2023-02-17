@@ -1,8 +1,8 @@
 use rand::seq::SliceRandom;
-use yew::UseStateHandle;
+use yewdux::prelude::Dispatch;
 
 use crate::{
-    components::matrix_component::draw_matrix,
+    components::{matrix_component::draw_matrix, store::matrix_state::MatrixState},
     models::{cell::Cell, matrix::Matrix},
 };
 
@@ -12,17 +12,17 @@ enum Orientation {
     Horizontal,
 }
 
-pub fn recursive_division(matrix_obj: UseStateHandle<Matrix>) {
-    let mut matrix = (*matrix_obj).clone();
+pub fn recursive_division(matrix_dispatch: &Dispatch<MatrixState>) {
+    let mut matrix = matrix_dispatch.get().matrix.clone();
     matrix.set_all_cells(Cell::UnVisited);
 
     let width = matrix.width;
     let height = matrix.height;
 
-    draw_surrounding_walls(matrix_obj.clone(), &mut matrix);
+    draw_surrounding_walls(matrix_dispatch.clone(), &mut matrix);
 
     divide(
-        matrix_obj.clone(),
+        matrix_dispatch.clone(),
         &mut matrix,
         2,
         2,
@@ -31,10 +31,10 @@ pub fn recursive_division(matrix_obj: UseStateHandle<Matrix>) {
         Orientation::Horizontal,
     );
 
-    draw_matrix(matrix_obj, matrix);
+    draw_matrix(matrix_dispatch.clone(), matrix);
 }
 
-fn draw_surrounding_walls(matrix_obj: UseStateHandle<Matrix>, matrix: &mut Matrix) {
+fn draw_surrounding_walls(matrix_dispatch: Dispatch<MatrixState>, matrix: &mut Matrix) {
     let width = matrix.width;
     let height = matrix.height;
 
@@ -42,19 +42,19 @@ fn draw_surrounding_walls(matrix_obj: UseStateHandle<Matrix>, matrix: &mut Matri
     for y in 0..height {
         matrix.set_cell((0, y), Cell::Wall);
         matrix.set_cell((width - 1, y), Cell::Wall);
-        draw_matrix(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_dispatch.clone(), matrix.clone());
     }
 
     // horizontal walls
     for x in 0..width {
         matrix.set_cell((x, 0), Cell::Wall);
         matrix.set_cell((x, height - 1), Cell::Wall);
-        draw_matrix(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_dispatch.clone(), matrix.clone());
     }
 }
 
 fn divide(
-    matrix_obj: UseStateHandle<Matrix>,
+    matrix_dispatch: Dispatch<MatrixState>,
     matrix: &mut Matrix,
     min_x: isize,
     min_y: isize,
@@ -87,11 +87,11 @@ fn divide(
             }
 
             matrix.set_cell((curr_col, curr_row), Cell::UnVisited);
-            draw_matrix(matrix_obj.clone(), matrix.clone());
+            draw_matrix(matrix_dispatch.clone(), matrix.clone());
 
             if curr_col - min_x - 2 < max_y - min_y {
                 divide(
-                    matrix_obj.clone(),
+                    matrix_dispatch.clone(),
                     matrix,
                     min_x,
                     min_y,
@@ -101,7 +101,7 @@ fn divide(
                 );
             } else {
                 divide(
-                    matrix_obj.clone(),
+                    matrix_dispatch.clone(),
                     matrix,
                     min_x,
                     min_y,
@@ -113,7 +113,7 @@ fn divide(
 
             if max_x - curr_col + 2 < max_y - min_y {
                 divide(
-                    matrix_obj,
+                    matrix_dispatch,
                     matrix,
                     curr_col + 2,
                     min_y,
@@ -123,7 +123,7 @@ fn divide(
                 );
             } else {
                 divide(
-                    matrix_obj,
+                    matrix_dispatch,
                     matrix,
                     curr_col + 2,
                     min_y,
@@ -151,11 +151,11 @@ fn divide(
             }
 
             matrix.set_cell((curr_col, curr_row), Cell::UnVisited);
-            draw_matrix(matrix_obj.clone(), matrix.clone());
+            draw_matrix(matrix_dispatch.clone(), matrix.clone());
 
             if curr_row - min_y - 2 > max_x - max_y {
                 divide(
-                    matrix_obj.clone(),
+                    matrix_dispatch.clone(),
                     matrix,
                     min_x,
                     min_y,
@@ -165,7 +165,7 @@ fn divide(
                 );
             } else {
                 divide(
-                    matrix_obj.clone(),
+                    matrix_dispatch.clone(),
                     matrix,
                     min_x,
                     min_y,
@@ -177,7 +177,7 @@ fn divide(
 
             if max_y - curr_row + 2 > max_x - min_x {
                 divide(
-                    matrix_obj,
+                    matrix_dispatch,
                     matrix,
                     min_x,
                     curr_row + 2,
@@ -187,7 +187,7 @@ fn divide(
                 );
             } else {
                 divide(
-                    matrix_obj,
+                    matrix_dispatch,
                     matrix,
                     min_x,
                     curr_row + 2,

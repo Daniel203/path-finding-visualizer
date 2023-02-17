@@ -1,15 +1,15 @@
 use std::collections::VecDeque;
 
 use rand::{seq::SliceRandom, thread_rng, Rng};
-use yew::UseStateHandle;
+use yewdux::prelude::Dispatch;
 
 use crate::{
-    components::matrix_component::draw_matrix,
+    components::{matrix_component::draw_matrix, store::matrix_state::MatrixState},
     models::{cell::Cell, matrix::Matrix},
 };
 
-pub fn dfs(matrix_obj: UseStateHandle<Matrix>) {
-    let mut matrix = (*matrix_obj).clone();
+pub fn dfs(matrix_dispatch: &Dispatch<MatrixState>) {
+    let mut matrix = matrix_dispatch.get().matrix.clone();
     let mut queue: VecDeque<(isize, isize)>;
     let mut visited: Vec<(isize, isize)> = Vec::new();
 
@@ -41,11 +41,11 @@ pub fn dfs(matrix_obj: UseStateHandle<Matrix>) {
                 queue.push_back(*neighbour);
             }
 
-            draw_matrix(matrix_obj.clone(), matrix.clone());
+            draw_matrix(matrix_dispatch.clone(), matrix.clone());
         }
     }
 
-    draw_matrix(matrix_obj, matrix);
+    draw_matrix(matrix_dispatch.clone(), matrix);
 }
 
 fn get_random_cell(matrix: &mut Matrix) -> (isize, isize) {

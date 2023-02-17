@@ -1,96 +1,88 @@
 use gloo_timers::callback::Timeout;
 use web_sys::MouseEvent;
-use yew::{
-    classes, function_component, html, use_state, Callback, Html, Properties, UseStateHandle,
-};
+use yew::{classes, function_component, html, Html};
+use yewdux::prelude::{use_store, Dispatch};
 
 use crate::algorithms::{maze_generation, path_finding};
 use crate::algorithms::{maze_generation::MGAlgorithms, path_finding::PFAlgorithms};
-use crate::{
-    constraints::{BOARD_HEIGHT, BOARD_WIDTH},
-    models::{cell::Cell, matrix::Matrix},
-};
+use crate::components::store::algorithm_selector_state::AlgorithmSelectorState;
+use crate::models::{cell::Cell, matrix::Matrix};
 
-#[derive(Properties, PartialEq, Clone)]
-pub struct MatrixProps {
-    pub selected_mg_algorithm: Option<MGAlgorithms>,
-    pub selected_pf_algorithm: Option<PFAlgorithms>,
-    pub reset_board: bool,
-    pub reset_visited: bool,
-    pub set_pf_algorithm: Callback<Option<PFAlgorithms>>,
-    pub set_mg_algorithm: Callback<Option<MGAlgorithms>>,
-    pub set_reset_board: Callback<bool>,
-    pub set_reset_visited: Callback<bool>,
-}
+use super::store::matrix_state::MatrixState;
 
 #[function_component(MatrixComponent)]
-pub fn matrix_component(props: &MatrixProps) -> Html {
-    let matrix_handle = use_state(|| Matrix::new(BOARD_WIDTH, BOARD_HEIGHT));
-    let mouse_down = use_state(|| false);
+pub fn matrix_component() -> Html {
+    let (algorithm_selector_state, algorithm_selector_dispatch) =
+        use_store::<AlgorithmSelectorState>();
+    let (matrix_state, matrix_dispatch) = use_store::<MatrixState>();
 
-    let props = props.clone();
-
-    if let Some(algorithm) = props.selected_mg_algorithm {
-        match algorithm {
+    if algorithm_selector_state.generate_maze_clicked {
+        match algorithm_selector_state.selected_mg_algorithm {
             MGAlgorithms::NotSelected => {}
             MGAlgorithms::BinaryTree => {
-                maze_generation::binary_tree::binary_tree(matrix_handle.clone());
+                maze_generation::binary_tree::binary_tree(&matrix_dispatch);
             }
             MGAlgorithms::Dfs => {
-                maze_generation::dfs::dfs(matrix_handle.clone());
+                maze_generation::dfs::dfs(&matrix_dispatch);
             }
             MGAlgorithms::RecursiveDivision => {
-                maze_generation::recursive_division::recursive_division(matrix_handle.clone());
+                maze_generation::recursive_division::recursive_division(&matrix_dispatch);
             }
         };
 
-        props.set_mg_algorithm.emit(None);
+        algorithm_selector_dispatch.reduce_mut(|state| {
+            state.selected_mg_algorithm = MGAlgorithms::default();
+            state.generate_maze_clicked = false;
+        });
     }
 
-    if let Some(algorithm) = props.selected_pf_algorithm {
-        match algorithm {
+    if algorithm_selector_state.find_path_clicked {
+        match algorithm_selector_state.selected_pf_algorithm {
             PFAlgorithms::NotSelected => {}
             PFAlgorithms::Bfs => {
-                path_finding::bfs::bfs(matrix_handle.clone());
+                path_finding::bfs::bfs(&matrix_dispatch);
             }
             PFAlgorithms::Dfs => {
-                path_finding::dfs::dfs(matrix_handle.clone());
+                path_finding::dfs::dfs(&matrix_dispatch);
             }
             PFAlgorithms::AStar => {
-                path_finding::a_star::a_star(matrix_handle.clone());
+                path_finding::a_star::a_star(&matrix_dispatch);
             }
             PFAlgorithms::AStarSearch => {
-                path_finding::a_star_search::a_star_search(matrix_handle.clone());
+                path_finding::a_star_search::a_star_search(&matrix_dispatch);
             }
         };
 
-        props.set_pf_algorithm.emit(None);
+        algorithm_selector_dispatch.reduce_mut(|state| {
+            state.selected_pf_algorithm = PFAlgorithms::default();
+            state.find_path_clicked = false;
+        });
     }
 
-    if props.reset_board {
-        let mut matrix = (*matrix_handle).clone();
-        matrix.set_all_cells(Cell::UnVisited);
-        matrix_handle.set(matrix);
-        props.set_reset_board.emit(false);
+    if algorithm_selector_dispatch.get().reset_board_clicked {
+        matrix_dispatch.reduce_mut(|state| state.matrix.set_all_cells(Cell::UnVisited));
+        algorithm_selector_dispatch.reduce_mut(|state| state.reset_board_clicked = false);
     }
 
-    if props.reset_visited {
-        let mut matrix = (*matrix_handle).clone();
-        matrix.replace_cells(vec![Cell::Visited, Cell::Path], Cell::UnVisited);
-        matrix_handle.set(matrix);
-        props.set_reset_visited.emit(false);
+    if algorithm_selector_dispatch.get().reset_visited_clicked {
+        matrix_dispatch.reduce_mut(|state| {
+            state
+                .matrix
+                .replace_cells(vec![Cell::Visited, Cell::Path], Cell::UnVisited)
+        });
+        algorithm_selector_dispatch.reduce_mut(|state| state.reset_visited_clicked = false);
     }
 
     html! {
         <div>
             <table>
             {
-                matrix_handle.matrix
+                matrix_state.matrix.matrix
                     .iter()
                     .enumerate()
-                    .map(|(y, line)| {
+                    .map( |(y, line)| {
                         html! {
-                            <tr>{table_row(line, &matrix_handle, &mouse_down, y)}</tr>
+                            <tr>{table_row(line, &matrix_dispatch, y)}</tr>
                         }
                     })
                 .collect::<Html>()
@@ -100,68 +92,36 @@ pub fn matrix_component(props: &MatrixProps) -> Html {
     }
 }
 
-fn table_row(
-    line: &[Cell],
-    matrix_handle: &UseStateHandle<Matrix>,
-    mouse_down: &UseStateHandle<bool>,
-    y: usize,
-) -> Html {
+fn table_row(line: &[Cell], matrix_dispatch: &Dispatch<MatrixState>, y: usize) -> Html {
     return line
         .iter()
         .enumerate()
-        .map(|(x, cell)| table_cell(matrix_handle, mouse_down, cell, x, y))
+        .map(|(x, cell)| table_cell(matrix_dispatch.clone(), cell, x, y))
         .collect::<Html>();
 }
 
-fn table_cell(
-    matrix_handle: &UseStateHandle<Matrix>,
-    mouse_down: &UseStateHandle<bool>,
-    cell: &Cell,
-    x: usize,
-    y: usize,
-) -> Html {
-    let onclick = {
-        let matrix_handle = matrix_handle.clone();
+fn table_cell(matrix_dispatch: Dispatch<MatrixState>, cell: &Cell, x: usize, y: usize) -> Html {
+    let onclick = matrix_dispatch.reduce_mut_callback(move |state| {
+        state.matrix = handle_cell_clicked(state.matrix.clone(), x, y);
+    });
 
-        move |_| {
-            let new_matrix = handle_cell_clicked(&matrix_handle, x, y);
-
-            matrix_handle.set(new_matrix);
+    let onmouseenter = matrix_dispatch.reduce_mut_callback_with(move |state, _: MouseEvent| {
+        if state.mouse_down {
+            state.matrix = handle_cell_clicked(state.matrix.clone(), x, y);
         }
-    };
+    });
 
-    let onmouseenter = {
-        let mouse_down = mouse_down.clone();
-        let matrix_handle = matrix_handle.clone();
-
-        move |_| {
-            if *mouse_down {
-                let new_matrix = handle_cell_clicked(&matrix_handle, x, y);
-
-                matrix_handle.set(new_matrix);
-            }
+    let onmouseup = matrix_dispatch.reduce_mut_callback_with(move |state, event: MouseEvent| {
+        if event.button() == 0 {
+            state.mouse_down = false;
         }
-    };
+    });
 
-    let onmouseup = {
-        let mouse_down = mouse_down.clone();
-
-        move |event: MouseEvent| {
-            if event.button() == 0 {
-                mouse_down.set(false);
-            }
+    let onmousedown = matrix_dispatch.reduce_mut_callback_with(move |state, event: MouseEvent| {
+        if event.button() == 0 {
+            state.mouse_down = true;
         }
-    };
-
-    let onmousedown = {
-        let mouse_down = mouse_down.clone();
-
-        move |event: MouseEvent| {
-            if event.button() == 0 {
-                mouse_down.set(true);
-            }
-        }
-    };
+    });
 
     return html! {
         <td
@@ -174,24 +134,24 @@ fn table_cell(
     };
 }
 
-fn handle_cell_clicked(matrix_handle: &UseStateHandle<Matrix>, x: usize, y: usize) -> Matrix {
-    let mut new_matrix = (**matrix_handle).clone();
+fn handle_cell_clicked(matrix: Matrix, x: usize, y: usize) -> Matrix {
+    let mut matrix = matrix;
     let coords = (x as isize, y as isize);
 
-    if new_matrix.start.is_none() && new_matrix.get_cell(coords) != Some(Cell::End) {
-        new_matrix.add_start(coords);
-    } else if new_matrix.end.is_none() && new_matrix.get_cell(coords) != Some(Cell::Start) {
-        new_matrix.add_end(coords);
+    if matrix.start.is_none() && matrix.get_cell(coords) != Some(Cell::End) {
+        matrix.add_start(coords);
+    } else if matrix.end.is_none() && matrix.get_cell(coords) != Some(Cell::Start) {
+        matrix.add_end(coords);
     } else {
-        new_matrix.toggle_cell(coords);
+        matrix.toggle_cell(coords);
     }
 
-    return new_matrix;
+    return matrix;
 }
 
-pub fn draw_matrix(matrix_obj: UseStateHandle<Matrix>, matrix: Matrix) {
+pub fn draw_matrix(matrix_dispatch: Dispatch<MatrixState>, matrix: Matrix) {
     Timeout::new(0, move || {
-        matrix_obj.set(matrix.clone());
+        matrix_dispatch.reduce_mut(|state| state.matrix = matrix);
     })
     .forget();
 }

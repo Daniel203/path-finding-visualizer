@@ -1,14 +1,14 @@
 use std::collections::VecDeque;
 
-use yew::UseStateHandle;
+use yewdux::prelude::Dispatch;
 
 use crate::{
-    components::matrix_component::draw_matrix,
+    components::{matrix_component::draw_matrix, store::matrix_state::MatrixState},
     models::{cell::Cell, matrix::Matrix},
 };
 
-pub fn dfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
-    let mut matrix = (*matrix_obj).clone();
+pub fn dfs(matrix_dispatch: &Dispatch<MatrixState>) -> Option<i32> {
+    let mut matrix = matrix_dispatch.get().matrix.clone();
     let start = matrix.start.unwrap();
     let end = matrix.end.unwrap();
 
@@ -25,7 +25,7 @@ pub fn dfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
         visited[prev_coords.1 as usize][prev_coords.0 as usize] = Some(curr_coords);
 
         if curr_coords == end {
-            write_shortest_path(start, end, &visited, &mut matrix, &matrix_obj);
+            write_shortest_path(start, end, &visited, &mut matrix, matrix_dispatch);
             return Some(distance);
         }
 
@@ -33,7 +33,7 @@ pub fn dfs(matrix_obj: UseStateHandle<Matrix>) -> Option<i32> {
             matrix.set_cell(curr_coords, Cell::Visited);
         }
 
-        draw_matrix(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_dispatch.clone(), matrix.clone());
 
         for neighbour in get_neighbours(&matrix, curr_coords) {
             if visited[neighbour.1 as usize][neighbour.0 as usize].is_none() {
@@ -74,13 +74,13 @@ fn write_shortest_path(
     end: (isize, isize),
     visited: &[Vec<Option<(isize, isize)>>],
     matrix: &mut Matrix,
-    matrix_obj: &UseStateHandle<Matrix>,
+    matrix_dispatch: &Dispatch<MatrixState>,
 ) {
     let (mut next_x, mut next_y) = visited[start.1 as usize][start.0 as usize].unwrap();
 
     while (next_x, next_y) != end {
         matrix.set_cell((next_x, next_y), Cell::Path);
-        draw_matrix(matrix_obj.clone(), matrix.clone());
+        draw_matrix(matrix_dispatch.clone(), matrix.clone());
 
         let (nx, ny) = visited[next_y as usize][next_x as usize].unwrap();
 

@@ -1,3 +1,5 @@
+use crate::constraints;
+
 use super::cell::Cell;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -7,6 +9,12 @@ pub struct Matrix {
     pub matrix: Vec<Vec<Cell>>,
     pub start: Option<(isize, isize)>,
     pub end: Option<(isize, isize)>,
+}
+
+impl Default for Matrix {
+    fn default() -> Self {
+        return Self::new(constraints::BOARD_WIDTH, constraints::BOARD_HEIGHT);
+    }
 }
 
 impl Matrix {
