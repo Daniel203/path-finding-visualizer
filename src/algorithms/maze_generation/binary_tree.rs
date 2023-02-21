@@ -1,8 +1,9 @@
 use rand::{seq::SliceRandom, thread_rng};
 use yewdux::prelude::Dispatch;
 
+use crate::components::store::matrix_state::MatrixState;
 use crate::{
-    components::{matrix_component::draw_matrix, store::matrix_state::MatrixState},
+    components::custom_components::matrix_component::draw_matrix,
     models::{cell::Cell, matrix::Matrix},
 };
 

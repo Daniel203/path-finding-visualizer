@@ -1,6 +1,11 @@
 use std::fmt::Display;
 
 use strum_macros::EnumIter;
+use yewdux::prelude::Dispatch;
+
+use crate::components::store::matrix_state::MatrixState;
+
+use self::{a_star::a_star, a_star_search::a_star_search, bfs::bfs, dfs::dfs};
 
 pub mod a_star;
 pub mod a_star_search;
@@ -31,5 +36,19 @@ impl Display for PFAlgorithms {
             PFAlgorithms::AStar => write!(f, "A*"),
             PFAlgorithms::AStarSearch => write!(f, "A* Search"),
         }
+    }
+}
+
+type PFFunction = fn(&Dispatch<MatrixState>) -> Option<i32>;
+
+impl PFAlgorithms {
+    pub fn get_function(self) -> Option<PFFunction> {
+        return match self {
+            PFAlgorithms::NotSelected => None,
+            PFAlgorithms::Bfs => Some(bfs),
+            PFAlgorithms::Dfs => Some(dfs),
+            PFAlgorithms::AStar => Some(a_star),
+            PFAlgorithms::AStarSearch => Some(a_star_search),
+        };
     }
 }

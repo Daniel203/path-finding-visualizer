@@ -2,8 +2,9 @@ use std::collections::VecDeque;
 
 use yewdux::prelude::Dispatch;
 
+use crate::components::custom_components::matrix_component::draw_matrix;
 use crate::{
-    components::{matrix_component::draw_matrix, store::matrix_state::MatrixState},
+    components::store::matrix_state::MatrixState,
     models::{cell::Cell, matrix::Matrix},
 };
 

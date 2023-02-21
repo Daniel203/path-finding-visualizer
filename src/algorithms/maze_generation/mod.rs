@@ -1,6 +1,11 @@
 use std::fmt::Display;
 
 use strum_macros::EnumIter;
+use yewdux::prelude::Dispatch;
+
+use crate::components::store::matrix_state::MatrixState;
+
+use self::{binary_tree::binary_tree, dfs::dfs, recursive_division::recursive_division};
 
 pub mod binary_tree;
 pub mod dfs;
@@ -28,5 +33,18 @@ impl Display for MGAlgorithms {
             MGAlgorithms::Dfs => write!(f, "DFS"),
             MGAlgorithms::RecursiveDivision => write!(f, "Recursive Division"),
         }
+    }
+}
+
+type MGFunction = fn(&Dispatch<MatrixState>);
+
+impl MGAlgorithms {
+    pub fn get_function(self) -> Option<MGFunction> {
+        return match self {
+            MGAlgorithms::NotSelected => None,
+            MGAlgorithms::BinaryTree => Some(binary_tree),
+            MGAlgorithms::Dfs => Some(dfs),
+            MGAlgorithms::RecursiveDivision => Some(recursive_division),
+        };
     }
 }

@@ -1,5 +1,5 @@
 use gloo_timers::callback::Timeout;
-use yew::{classes, function_component, html, use_effect, Html, Properties};
+use yew::{function_component, html, use_effect, Html, Properties};
 
 use crate::models::notification::Notification;
 
@@ -28,6 +28,6 @@ pub fn notification(props: &NotificationProps) -> Html {
     });
 
     html! {
-        <div id="snackbar" class={classes!(notification.get_class_name())}>{notification.msg}</div>
+        <div id="snackbar" class={notification.get_class_name()}>{notification.msg}</div>
     }
 }

@@ -1,6 +1,6 @@
 #![allow(clippy::needless_return)]
 
-use crate::components::app_component::App;
+use crate::components::custom_components::app_component::App;
 
 mod algorithms;
 mod components;

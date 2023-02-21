@@ -5,7 +5,7 @@ use std::{
 
 use yewdux::prelude::Dispatch;
 
-use crate::{components::matrix_component::draw_matrix, models::matrix::Matrix};
+use crate::{components::custom_components::matrix_component::draw_matrix, models::matrix::Matrix};
 use crate::{components::store::matrix_state::MatrixState, models::cell::Cell};
 
 #[derive(Debug, Clone, Copy)]

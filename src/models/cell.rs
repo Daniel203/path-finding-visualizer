@@ -10,6 +10,12 @@ pub enum Cell {
     End,
 }
 
+impl Default for Cell {
+    fn default() -> Self {
+        return Self::UnVisited;
+    }
+}
+
 impl Cell {
     pub fn class_name(&self) -> String {
         match self {
